@@ -1,4 +1,69 @@
-/* Reset and base styles */
+/* ==========================================================================
+   CSS Variables (Custom Properties)
+   ========================================================================== */
+:root {
+    /* Colors */
+    --color-primary: #ff6b35;
+    --color-primary-hover: #e55a2b;
+    --color-dark: #1a1a1a;
+    --color-dark-secondary: #0d0d0d;
+    --color-gray: #333;
+    --color-gray-light: #666;
+    --color-gray-lighter: #999;
+    --color-gray-lightest: #ccc;
+    --color-text: #2d2d2d;
+    --color-text-light: #fff;
+    --color-background: #f8f6f1;
+    --color-border: #ddd;
+    --color-error: #ff4444;
+    
+    /* Typography */
+    --font-family-primary: 'Georgia', 'Times New Roman', serif;
+    --font-family-secondary: 'Courier New', monospace;
+    --font-size-small: 0.75rem;
+    --font-size-base: 0.9rem;
+    --font-size-medium: 1.2rem;
+    --font-size-large: 1.3rem;
+    --font-size-xl: 1.5rem;
+    --font-size-xxl: 1.8rem;
+    --font-weight-normal: 500;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+    --font-weight-black: 900;
+    --line-height-base: 1.7;
+    --line-height-tight: 1.6;
+    
+    /* Spacing */
+    --spacing-xs: 0.3rem;
+    --spacing-sm: 0.5rem;
+    --spacing-md: 0.8rem;
+    --spacing-base: 1rem;
+    --spacing-lg: 1.2rem;
+    --spacing-xl: 1.5rem;
+    --spacing-xxl: 1.8rem;
+    --spacing-2xl: 2rem;
+    --spacing-3xl: 2.5rem;
+    --spacing-4xl: 3rem;
+    
+    /* Layout */
+    --container-max-width: 1400px;
+    --sidebar-width: 320px;
+    --border-radius: 4px;
+    --border-radius-lg: 8px;
+    --border-width: 1px;
+    --border-width-thick: 4px;
+    
+    /* Z-index */
+    --z-index-base: 2;
+    --z-index-popup: 1000;
+    
+    /* Transitions */
+    --transition-base: all 0.2s ease;
+}
+
+/* ==========================================================================
+   Reset and Base Styles
+   ========================================================================== */
 * {
     margin: 0;
     padding: 0;
@@ -6,36 +71,38 @@
 }
 
 body {
-    font-family: 'Georgia', 'Times New Roman', serif;
-    line-height: 1.7;
-    color: #2d2d2d;
-    background: #f8f6f1;
+    font-family: var(--font-family-primary);
+    line-height: var(--line-height-base);
+    color: var(--color-text);
+    background: var(--color-background);
     overflow-x: hidden;
 }
 
-/* Header */
+/* ==========================================================================
+   Header and Navigation
+   ========================================================================== */
 .header {
-    background: #1a1a1a;
+    background: var(--color-dark);
     padding: 0;
     position: relative;
-    border-bottom: 4px solid #ff6b35;
-    color: white;
+    border-bottom: var(--border-width-thick) solid var(--color-primary);
+    color: var(--color-text-light);
 }
 
 .nav-container {
-    max-width: 1400px;
+    max-width: var(--container-max-width);
     margin: 0 auto;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1.2rem 2rem;
+    padding: var(--spacing-lg) var(--spacing-2xl);
 }
 
 .logo {
-    font-family: 'Courier New', monospace;
-    font-size: 1.8rem;
-    font-weight: 900;
-    color: #ff6b35;
+    font-family: var(--font-family-secondary);
+    font-size: var(--font-size-xxl);
+    font-weight: var(--font-weight-black);
+    color: var(--color-primary);
     text-transform: uppercase;
     letter-spacing: 0.1em;
     text-decoration: none;
@@ -52,97 +119,107 @@ body {
 }
 
 .nav-menu a {
-    color: #fff;
+    color: var(--color-text-light);
     text-decoration: none;
-    padding: 1rem 1.5rem;
+    padding: var(--spacing-base) var(--spacing-xl);
     display: block;
-    font-weight: 500;
+    font-weight: var(--font-weight-normal);
     text-transform: uppercase;
-    font-size: 0.9rem;
+    font-size: var(--font-size-base);
     letter-spacing: 0.05em;
-    transition: all 0.2s ease;
-    border-right: 1px solid #333;
+    transition: var(--transition-base);
+    border-right: var(--border-width) solid var(--color-gray);
 }
 
 .nav-menu a:hover {
-    background: #ff6b35;
-    color: #1a1a1a;
+    background: var(--color-primary);
+    color: var(--color-dark);
 }
 
-/* Search */
+/* ==========================================================================
+   Search
+   ========================================================================== */
 .search-area {
-    background: #333;
-    padding: 0.8rem 1.2rem;
+    background: var(--color-gray);
+    padding: var(--spacing-md) var(--spacing-lg);
     border-radius: 0;
 }
 
 .search-input {
     background: transparent;
     border: none;
-    color: #fff;
-    font-size: 0.9rem;
+    color: var(--color-text-light);
+    font-size: var(--font-size-base);
     width: 200px;
     outline: none;
-    padding: 0.5rem;
-    border-radius: 4px;
+    padding: var(--spacing-sm);
+    border-radius: var(--border-radius);
 }
 
 .search-input::placeholder {
-    color: #999;
+    color: var(--color-gray-lighter);
 }
 
-/* Main Layout */
+/* ==========================================================================
+   Main Layout
+   ========================================================================== */
 .main-container {
-    max-width: 1400px;
+    max-width: var(--container-max-width);
     margin: 0 auto;
     display: grid;
-    grid-template-columns: 1fr 320px; /* Content on the left, sidebar on the right */
+    grid-template-columns: 1fr var(--sidebar-width);
     gap: 0;
     min-height: 80vh;
-    padding: 2rem;
+    padding: var(--spacing-2xl);
 }
 
-/* Side Ad Panel (left) */
+/* ==========================================================================
+   Side Ad Panel
+   ========================================================================== */
 #side-ad-container {
     grid-row: 1 / span 2;
     grid-column: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-right: 2rem;
+    margin-right: var(--spacing-2xl);
     margin-top: 0;
 }
 
-/* Sidebar (right) */
+/* ==========================================================================
+   Sidebar
+   ========================================================================== */
 .sidebar {
     grid-column: 2;
-    background: #1a1a1a;
-    padding: 3rem 2rem;
-    color: #fff;
-    border-radius: 8px;
+    background: var(--color-dark);
+    padding: var(--spacing-4xl) var(--spacing-2xl);
+    color: var(--color-text-light);
+    border-radius: var(--border-radius-lg);
     height: fit-content;
-    z-index: 2;
+    z-index: var(--z-index-base);
 }
 
 .sidebar-section {
-    margin-bottom: 3rem;
+    margin-bottom: var(--spacing-4xl);
 }
 
 .sidebar-title {
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: #ff6b35;
-    margin-bottom: 1.5rem;
+    font-size: var(--font-size-medium);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-primary);
+    margin-bottom: var(--spacing-xl);
     text-transform: uppercase;
     letter-spacing: 0.05em;
 }
 
-/* Banner Ads */
+/* ==========================================================================
+   Promotional Elements
+   ========================================================================== */
 .promo-box {
-    background: #ff6b35;
-    color: #1a1a1a;
-    padding: 2rem;
-    margin-bottom: 3rem;
+    background: var(--color-primary);
+    color: var(--color-dark);
+    padding: var(--spacing-2xl);
+    margin-bottom: var(--spacing-4xl);
     position: relative;
 }
 
@@ -152,51 +229,54 @@ body {
     top: 0;
     left: 0;
     right: 0;
-    height: 4px;
-    background: #1a1a1a;
+    height: var(--border-width-thick);
+    background: var(--color-dark);
 }
 
 .promo-title {
-    font-size: 1.3rem;
-    font-weight: 900;
-    margin-bottom: 0.5rem;
+    font-size: var(--font-size-large);
+    font-weight: var(--font-weight-black);
+    margin-bottom: var(--spacing-sm);
     text-transform: uppercase;
-    color: #333;
+    color: var(--color-gray);
 }
 
 .promo-text {
-    font-size: 0.9rem;
-    margin-bottom: 1.5rem;
+    font-size: var(--font-size-base);
+    margin-bottom: var(--spacing-xl);
 }
 
 .promo-link {
-    background: #1a1a1a;
-    color: #fff;
-    padding: 0.8rem 1.5rem;
+    background: var(--color-dark);
+    color: var(--color-text-light);
+    padding: var(--spacing-md) var(--spacing-xl);
     text-decoration: none;
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
     text-transform: uppercase;
-    font-size: 0.8rem;
+    font-size: var(--font-size-base);
     letter-spacing: 0.05em;
     display: inline-block;
-    border-radius: 4px;
-    margin-top: 1rem;
+    border-radius: var(--border-radius);
+    margin-top: var(--spacing-base);
+    transition: var(--transition-base);
 }
 
 .promo-link:hover {
-    background: #333;
+    background: var(--color-gray);
 }
 
-/* Recent Posts */
+/* ==========================================================================
+   Recent Posts
+   ========================================================================== */
 .recent-list {
     list-style: none;
     padding: 0;
 }
 
 .recent-list li {
-    border-bottom: 1px solid #333;
-    padding: 1rem 0;
-    margin-bottom: 1rem;
+    border-bottom: var(--border-width) solid var(--color-gray);
+    padding: var(--spacing-base) 0;
+    margin-bottom: var(--spacing-base);
 }
 
 .recent-list li:last-child {
@@ -204,72 +284,81 @@ body {
 }
 
 .recent-list a {
-    color: #fff;
+    color: var(--color-text-light);
     text-decoration: none;
-    font-weight: 500;
+    font-weight: var(--font-weight-normal);
+    transition: var(--transition-base);
 }
 
 .recent-list a:hover {
-    color: #ff6b35;
+    color: var(--color-primary);
 }
 
 .recent-date {
-    font-family: 'Courier New', monospace;
-    font-size: 0.75rem;
-    color: #666;
-    margin-top: 0.3rem;
+    font-family: var(--font-family-secondary);
+    font-size: var(--font-size-small);
+    color: var(--color-gray-light);
+    margin-top: var(--spacing-xs);
 }
 
-/* Categories */
+/* ==========================================================================
+   Categories
+   ========================================================================== */
 .category-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 0.5rem;
+    gap: var(--spacing-sm);
 }
 
 .category-item {
-    background: #333;
-    padding: 1rem;
+    background: var(--color-gray);
+    padding: var(--spacing-base);
     text-align: center;
-    color: #fff;
+    color: var(--color-text-light);
     text-decoration: none;
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
     text-transform: uppercase;
-    font-size: 0.8rem;
+    font-size: var(--font-size-base);
     letter-spacing: 0.05em;
-    transition: all 0.2s ease;
-    border-radius: 4px;
-    z-index: 2;
+    transition: var(--transition-base);
+    border-radius: var(--border-radius);
+    z-index: var(--z-index-base);
 }
 
 .category-item:hover {
-    background: #ff6b35;
-    color: #1a1a1a;
+    background: var(--color-primary);
+    color: var(--color-dark);
 }
 
-/* About Section */
+/* ==========================================================================
+   About Section
+   ========================================================================== */
 .about-text {
-    font-size: 0.9rem;
-    line-height: 1.6;
-    color: #ccc;
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-tight);
+    color: var(--color-gray-lightest);
 }
 
-/* Footer */
+/* ==========================================================================
+   Footer
+   ========================================================================== */
 .footer {
-    background: #0d0d0d;
-    color: #666;
+    background: var(--color-dark-secondary);
+    color: var(--color-gray-light);
     text-align: center;
-    padding: 2rem;
-    font-size: 0.9rem;
-    margin-top: 2rem;
+    padding: var(--spacing-2xl);
+    font-size: var(--font-size-base);
+    margin-top: var(--spacing-2xl);
 }
 
-/* In-content Banner */
+/* ==========================================================================
+   Content Banner
+   ========================================================================== */
 .content-banner {
-    background: #1a1a1a;
-    color: #fff;
-    padding: 2.5rem;
-    margin: 3rem 0;
+    background: var(--color-dark);
+    color: var(--color-text-light);
+    padding: var(--spacing-3xl);
+    margin: var(--spacing-4xl) 0;
     position: relative;
 }
 
@@ -279,38 +368,41 @@ body {
     bottom: 0;
     left: 0;
     right: 0;
-    height: 4px;
-    background: #ff6b35;
+    height: var(--border-width-thick);
+    background: var(--color-primary);
 }
 
 .banner-content h3 {
-    font-size: 1.5rem;
-    font-weight: 900;
-    margin-bottom: 0.8rem;
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-black);
+    margin-bottom: var(--spacing-md);
     text-transform: uppercase;
 }
 
 .banner-content p {
-    margin-bottom: 1.5rem;
-    color: #ccc;
+    margin-bottom: var(--spacing-xl);
+    color: var(--color-gray-lightest);
 }
 
 .banner-cta {
-    background: #ff6b35;
-    color: #1a1a1a;
-    padding: 1rem 2rem;
+    background: var(--color-primary);
+    color: var(--color-dark);
+    padding: var(--spacing-base) var(--spacing-2xl);
     text-decoration: none;
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
     text-transform: uppercase;
-    font-size: 0.9rem;
+    font-size: var(--font-size-base);
     letter-spacing: 0.05em;
+    transition: var(--transition-base);
 }
 
 .banner-cta:hover {
-    background: #e55a2b;
+    background: var(--color-primary-hover);
 }
 
-/* Ad Styles */
+/* ==========================================================================
+   Advertisement Styles
+   ========================================================================== */
 .banner-ad {
     width: 100%;
     max-width: 728px;
@@ -318,7 +410,7 @@ body {
     margin: 20px auto;
     display: block;
     object-fit: cover;
-    border: 1px solid #ddd;
+    border: var(--border-width) solid var(--color-border);
 }
 
 .side-ad {
@@ -328,9 +420,12 @@ body {
     margin: 20px 0;
     display: block;
     object-fit: cover;
-    border: 1px solid #ddd;
+    border: var(--border-width) solid var(--color-border);
 }
 
+/* ==========================================================================
+   Popup Advertisement
+   ========================================================================== */
 .popup-overlay {
     position: fixed;
     top: 0;
@@ -341,35 +436,39 @@ body {
     display: none;
     justify-content: center;
     align-items: center;
-    z-index: 1000;
+    z-index: var(--z-index-popup);
 }
 
 .popup-ad {
     position: relative;
     max-width: 500px;
     max-height: 400px;
-    border: 2px solid #fff;
-    border-radius: 8px;
+    border: 2px solid var(--color-text-light);
+    border-radius: var(--border-radius-lg);
 }
 
 .popup-close {
     position: absolute;
-    top: 10px; /* Lower the button from the top */
-    right: 10px; /* Move it inward from the right */
-    background: #ff4444;
-    color: white;
+    top: 10px;
+    right: 10px;
+    background: var(--color-error);
+    color: var(--color-text-light);
     border: none;
     border-radius: 50%;
     width: 30px;
     height: 30px;
     cursor: pointer;
     font-size: 18px;
-    font-weight: bold;
+    font-weight: var(--font-weight-bold);
     z-index: 10;
 }
 
-/* Ensure visibility for key elements */
-.article, .article-list, .sidebar {
+/* ==========================================================================
+   Utility Classes
+   ========================================================================== */
+.article,
+.article-list,
+.sidebar {
     display: block !important;
     visibility: visible !important;
 }
@@ -380,10 +479,12 @@ body {
 }
 
 .content {
-    z-index: 2;
+    z-index: var(--z-index-base);
 }
 
-/* Responsive */
+/* ==========================================================================
+   Responsive Design
+   ========================================================================== */
 @media (max-width: 1024px) {
     .main-container {
         grid-template-columns: 1fr;
@@ -391,17 +492,17 @@ body {
 
     .content {
         border-right: none;
-        border-bottom: 1px solid #ddd;
-        padding: 2rem 1.5rem;
+        border-bottom: var(--border-width) solid var(--color-border);
+        padding: var(--spacing-2xl) var(--spacing-xl);
     }
 
     .sidebar {
-        padding: 2rem;
+        padding: var(--spacing-2xl);
     }
 
     .nav-container {
         flex-direction: column;
-        gap: 1rem;
+        gap: var(--spacing-base);
     }
 
     .nav-menu {
@@ -416,20 +517,20 @@ body {
 
 @media (max-width: 768px) {
     .content {
-        padding: 2rem 1.5rem;
+        padding: var(--spacing-2xl) var(--spacing-xl);
     }
 
     .article:hover {
-        margin: 0 -1.5rem;
-        padding-left: 1.5rem;
-        padding-right: 1.5rem;
+        margin: 0 calc(-1 * var(--spacing-xl));
+        padding-left: var(--spacing-xl);
+        padding-right: var(--spacing-xl);
     }
 
     .nav-menu a {
-        padding: 0.8rem 1rem;
-        font-size: 0.8rem;
+        padding: var(--spacing-md) var(--spacing-base);
+        font-size: var(--font-size-base);
         border-right: none;
-        border-bottom: 1px solid #333;
+        border-bottom: var(--border-width) solid var(--color-gray);
     }
 
     .search-area {
