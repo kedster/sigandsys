@@ -164,6 +164,7 @@ class AdManager {
 
             renderArticles() {
                 const articleList = document.getElementById('article-list');
+                console.log('Rendering articles:', this.articles);
                 if (this.articles.length === 0) {
                     articleList.innerHTML = '<div class="no-articles">No articles found.</div>';
                     return;
@@ -199,6 +200,7 @@ class AdManager {
                 });
 
                 articleList.innerHTML = articlesHTML;
+                console.log('Rendered articles HTML:', articleList.innerHTML);
 
                 // Add click handlers for read more buttons
                 document.querySelectorAll('.read-more-btn').forEach(btn => {
@@ -246,6 +248,7 @@ class AdManager {
                 });
 
                 topicsGrid.innerHTML = topicsHTML;
+                console.log('Rendered topics HTML:', topicsGrid.innerHTML);
 
                 // Add click handlers for topic filtering
                 document.querySelectorAll('.category-item').forEach(item => {

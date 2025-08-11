@@ -121,6 +121,7 @@ body {
     color: #fff;
     border-radius: 8px;
     height: fit-content;
+    z-index: 2;
 }
 
 .sidebar-section {
@@ -238,6 +239,7 @@ body {
     letter-spacing: 0.05em;
     transition: all 0.2s ease;
     border-radius: 4px;
+    z-index: 2;
 }
 
 .category-item:hover {
@@ -364,6 +366,39 @@ body {
     font-size: 18px;
     font-weight: bold;
     z-index: 10;
+}
+
+/* Ensure visibility for key elements */
+.article, .article-list, .category-item, .sidebar {
+    display: initial !important;
+    visibility: visible !important;
+}
+
+.article-list {
+    background: #fff;
+    z-index: 2;
+}
+
+.article {
+    color: #1a1a1a;
+    background: #f9f9f9;
+    z-index: 2;
+}
+
+.category-item {
+    color: #fff;
+    background: #333;
+    z-index: 2;
+}
+
+.sidebar {
+    color: #fff;
+    background: #1a1a1a;
+    z-index: 2;
+}
+
+.content {
+    z-index: 2;
 }
 
 /* Responsive */
