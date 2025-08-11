@@ -344,7 +344,14 @@ class BlogLoader {
                 try {
                     const response = await fetch(file);
                     if (!response.ok) throw new Error(`Failed to load ${file}`);
-                    return await response.json();
+                    const data = await response.json();
+                    
+                    // Handle both single article and array of articles
+                    if (Array.isArray(data)) {
+                        return data; // Multiple articles in array
+                    } else {
+                        return [data]; // Single article, wrap in array
+                    }
                 } catch (err) {
                     console.warn(`Could not load ${file}:`, err);
                     return null;
@@ -352,12 +359,18 @@ class BlogLoader {
             });
             
             const results = await Promise.all(promises);
-            this.articles = results.filter(Boolean);
+            // Flatten all articles into one array and filter out nulls
+            this.articles = results
+                .filter(Boolean)
+                .flat()
+                .filter(article => article && article.id); // Ensure valid articles
             
             // Sort only if we have articles
             if (this.articles.length > 0) {
                 this.articles.sort((a, b) => new Date(b.date) - new Date(a.date));
             }
+            
+            console.log(`Loaded ${this.articles.length} articles total`);
         } catch (error) {
             console.error('Error loading articles:', error);
             this.articles = [];
