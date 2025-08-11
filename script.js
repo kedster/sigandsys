@@ -5,12 +5,14 @@ class MediaManager {
             side: 'Ads/Side/',
             overlay: 'Ads/popup/'
         };
+        // Each entry: { src, href? }
         this.images = { banner: [], side: [], overlay: [] };
         this.currentIndex = { banner: 0, side: 0, overlay: 0 };
         this.extensions = ['.jpg', '.png'];
         this.manifestExtraExt = ['.jpeg', '.webp'];
         this.rotationIntervals = {};
-        this.overlayShown = false;
+        this.overlayVisible = false;
+        this.overlayRotationStarted = false;
         this.cache = new Map();
         this.maxIndexToCheck = 10;
         this.customPlaceholders = ['custom1', 'custom2', 'custom3'];
@@ -34,12 +36,32 @@ class MediaManager {
         try {
             const res = await fetch(`${folder}manifest.json`, { cache: 'no-cache' });
             if (!res.ok) return null;
-            const list = await res.json(); // expects an array of filenames
-            if (!Array.isArray(list)) return null;
-            const filtered = list
-                .filter(name => this.validateFileName(type, name))
-                .map(name => `${folder}${name}`);
-            return filtered;
+            const list = await res.json();
+            const normalize = (entry) => {
+                if (typeof entry === 'string') {
+                    if (!this.validateFileName(type, entry)) return null;
+                    return { src: `${folder}${entry}` };
+                }
+                if (entry && typeof entry === 'object') {
+                    const file = entry.file || entry.src || entry.name;
+                    const url = entry.url || entry.href || entry.link;
+                    if (!file || !this.validateFileName(type, file)) return null;
+                    return { src: `${folder}${file}`, href: url };
+                }
+                return null;
+            };
+
+            if (Array.isArray(list)) {
+                return list.map(normalize).filter(Boolean);
+            }
+
+            if (list && typeof list === 'object') {
+                // Object map of filename -> url
+                return Object.entries(list)
+                    .map(([file, url]) => normalize({ file, url }))
+                    .filter(Boolean);
+            }
+            return null;
         } catch {
             return null;
         }
@@ -60,7 +82,7 @@ class MediaManager {
                 continue;
             }
 
-            // Fallback probing with strict pattern (prefix + number + '-') and a few placeholders
+            // Fallback probing with strict pattern
             const prefix = this.getTypePrefix(type);
             const found = [];
             for (let i = 1; i <= this.maxIndexToCheck; i++) {
@@ -71,7 +93,7 @@ class MediaManager {
                         if (!this.validateFileName(type, fileName)) continue;
                         const path = `${folder}${fileName}`;
                         if (await this.quickImageCheck(path)) {
-                            found.push(path);
+                            found.push({ src: path });
                             pushed = true;
                             break;
                         }
@@ -100,44 +122,92 @@ class MediaManager {
     displayBanner() {
         const container = document.getElementById('media-banner') || document.getElementById('banner-ad-container');
         if (!container || this.images.banner.length === 0) return;
+        const entry = this.images.banner[0];
+        const href = entry.href || container.dataset.link || '#';
+
+        const a = document.createElement('a');
+        a.href = href;
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+
         const img = document.createElement('img');
         img.className = 'media-banner-img';
-        img.src = this.images.banner[0];
+        img.src = entry.src;
         img.alt = 'Featured banner';
         img.loading = 'lazy';
-        container.appendChild(img);
-        if (this.images.banner.length > 1) this.startRotation('banner', img);
+
+        a.appendChild(img);
+        container.appendChild(a);
+
+        if (this.images.banner.length > 1) this.startRotation('banner', img, a);
     }
 
     displayLeft() {
         const container = document.getElementById('media-left') || document.getElementById('side-ad-container');
         if (!container || this.images.side.length === 0) return;
+        const entry = this.images.side[0];
+        const href = entry.href || container.dataset.link || '#';
+
+        const a = document.createElement('a');
+        a.href = href;
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+
         const img = document.createElement('img');
         img.className = 'media-left-img';
-        img.src = this.images.side[0];
+        img.src = entry.src;
         img.alt = 'Left media';
         img.loading = 'lazy';
-        container.appendChild(img);
-        if (this.images.side.length > 1) this.startRotation('side', img);
+
+        a.appendChild(img);
+        container.appendChild(a);
+
+        if (this.images.side.length > 1) this.startRotation('side', img, a);
     }
 
     displayOverlay() {
-        if (this.images.overlay.length === 0 || this.overlayShown) return;
-        setTimeout(() => {
-            const overlay = document.getElementById('overlay') || document.getElementById('popup-overlay');
-            const img = document.getElementById('overlay-image') || document.getElementById('popup-ad-image');
-            if (!overlay || !img) return;
-            img.src = this.images.overlay[0];
-            overlay.style.display = 'flex';
-            this.overlayShown = true;
-            if (this.images.overlay.length > 1) this.startRotation('overlay', img);
-        }, 5000);
+        if (this.images.overlay.length === 0) return;
+        // schedule first show after 45s, then every 45s
+        setTimeout(() => this.showOverlayOnce(), 45000);
+        if (!this.rotationIntervals.__overlaySchedule) {
+            this.rotationIntervals.__overlaySchedule = setInterval(() => this.showOverlayOnce(), 45000);
+        }
     }
 
-    startRotation(type, imgEl) {
+    showOverlayOnce() {
+        if (this.overlayVisible || this.images.overlay.length === 0) return;
+        const overlay = document.getElementById('overlay') || document.getElementById('popup-overlay');
+        const img = document.getElementById('overlay-image') || document.getElementById('popup-ad-image');
+        if (!overlay || !img) return;
+        const entry = this.images.overlay[this.currentIndex.overlay] || this.images.overlay[0];
+        const href = entry.href || overlay.dataset.link || '#';
+        img.src = entry.src;
+        img.style.cursor = 'pointer';
+        img.onclick = () => { if (href && href !== '#') window.open(href, '_blank', 'noopener'); };
+        overlay.style.display = 'flex';
+        this.overlayVisible = true;
+        if (!this.overlayRotationStarted && this.images.overlay.length > 1) {
+            this.startRotation('overlay', img, null, overlay);
+            this.overlayRotationStarted = true;
+        }
+    }
+
+    startRotation(type, imgEl, anchorEl = null, overlayEl = null) {
         this.rotationIntervals[type] = setInterval(() => {
             this.currentIndex[type] = (this.currentIndex[type] + 1) % this.images[type].length;
-            imgEl.src = this.images[type][this.currentIndex[type]];
+            const entry = this.images[type][this.currentIndex[type]];
+            imgEl.src = entry.src;
+            if (anchorEl) {
+                const parent = anchorEl;
+                const container = parent.parentElement;
+                const fallbackHref = container ? container.dataset.link : '#';
+                parent.href = entry.href || fallbackHref || '#';
+            }
+            if (overlayEl && imgEl) {
+                const fallbackHref = overlayEl.dataset.link || '#';
+                const href = entry.href || fallbackHref;
+                imgEl.onclick = () => { if (href && href !== '#') window.open(href, '_blank', 'noopener'); };
+            }
         }, 10000);
     }
 
@@ -484,8 +554,35 @@ class BlogLoader {
 window.closePopup = function() {
     const overlay = document.getElementById('overlay') || document.getElementById('popup-overlay');
     if (overlay) overlay.style.display = 'none';
+    if (window.__mediaManager) window.__mediaManager.overlayVisible = false;
 };
 
 document.addEventListener('DOMContentLoaded', function() {
-    new BlogLoader();
+    const loader = new BlogLoader();
+    // expose media manager so closePopup can update visibility flag
+    window.__mediaManager = loader.mediaManager;
+    startTimebar();
 });
+
+// Timebar updater
+function startTimebar() {
+    const elAR = document.getElementById('time-ar');
+    const elCA = document.getElementById('time-ca');
+    const elNY = document.getElementById('time-ny');
+    if (!elAR || !elCA || !elNY) return;
+
+    const fmt = new Intl.DateTimeFormat([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+    const update = () => {
+        const now = new Date();
+        const ar = now.toLocaleTimeString('en-US', { timeZone: 'America/Chicago', hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        const ca = now.toLocaleTimeString('en-US', { timeZone: 'America/Los_Angeles', hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        const ny = now.toLocaleTimeString('en-US', { timeZone: 'America/New_York', hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        elAR.textContent = `AR: ${ar}`;
+        elCA.textContent = `CA: ${ca}`;
+        elNY.textContent = `NY: ${ny}`;
+    };
+
+    update();
+    setInterval(update, 1000);
+}

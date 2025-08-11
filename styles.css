@@ -137,6 +137,41 @@ body {
     color: var(--color-dark);
 }
 
+/* Social links in navbar */
+.social-links {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-left: 0.75rem;
+}
+
+.social-links a {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    text-decoration: none;
+    font-weight: var(--font-weight-bold);
+    font-size: 0.75rem;
+    letter-spacing: 0.02em;
+    color: var(--color-text-light);
+    border: var(--border-width) solid rgba(255,255,255,0.2);
+    background: transparent;
+    transition: var(--transition-base);
+}
+
+.social-links a:hover {
+    background: var(--color-primary);
+    color: var(--color-dark);
+    border-color: transparent;
+}
+
+/* Slightly smaller on narrow screens */
+@media (max-width: 768px) {
+    .social-links a { width: 28px; height: 28px; font-size: 0.7rem; }
+}
+
 /* ==========================================================================
    Search
    ========================================================================== */
@@ -812,4 +847,25 @@ body {
 .promo-box {
     background: var(--color-surface);
     box-shadow: var(--shadow-elev);
+}
+
+/* Timebar in navbar */
+.timebar {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-left: 0.75rem;
+    color: var(--color-text-light);
+    font-family: var(--font-family-secondary);
+    font-size: 0.8rem;
+    opacity: 0.9;
+}
+.timebar .time-item {
+    padding: 4px 8px;
+    border-radius: 999px;
+    border: var(--border-width) solid rgba(255,255,255,0.2);
+    background: transparent;
+}
+@media (max-width: 768px) {
+    .timebar { display: none; }
 }
