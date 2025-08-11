@@ -320,5 +320,5 @@
         ],
         "content": "<h2>Beyond Positive/Negative</h2><p>Future systems will detect complex emotional states like frustration masked by politeness, urgency without explicit wording, and intent prediction.</p><h2>Integration with ChatGPT</h2><p>ChatGPT-like models will be able to adapt tone mid-conversation and auto-generate responses that match the user's preferred style.</p><h2>Risks</h2><p>Overreliance on automation may erode human empathy in communication. Balanced deployment is key.</p>",
         "coverImage": "images/future-ai-email-sentiment.jpg"
-    },
+    }
 ]
