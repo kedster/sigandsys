@@ -1,0 +1,10 @@
+{
+  "files": [
+    "DNS.json",
+    "sample.json",
+    "sample2.json"
+  ],
+  "lastUpdated": "2025-01-15",
+  "totalArticles": 7,
+  "description": "Article manifest for SigAndSys blog"
+}

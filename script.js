@@ -223,13 +223,89 @@ class MediaManager {
 class BlogLoader {
     constructor() {
         this.articles = [];
-        this.articleFiles = ['articles/sample.json', 'articles/sample2.json'];
+        this.articleFiles = []; // Will be populated dynamically
         this.mediaManager = new MediaManager();
         this.pageSize = 5;
         this.visibleCount = this.pageSize;
         this.isFiltering = false;
         this.searchTimeout = null; // For debouncing
         this.init();
+    }
+
+    async discoverArticleFiles() {
+        try {
+            // Try to get a list of all JSON files in the articles directory
+            // We'll use a common pattern to discover files
+            const commonNames = ['DNS', 'sample', 'sample2', 'articles', 'blog', 'posts'];
+            const extensions = ['.json'];
+            
+            // Try to fetch a directory listing or use common naming patterns
+            const discoveredFiles = [];
+            
+            // First, try to load a manifest file that lists all articles
+            try {
+                const manifestResponse = await fetch('articles/manifest.json');
+                if (manifestResponse.ok) {
+                    const manifest = await manifestResponse.json();
+                    if (Array.isArray(manifest.files)) {
+                        manifest.files.forEach(file => {
+                            if (file.endsWith('.json')) {
+                                discoveredFiles.push(`articles/${file}`);
+                            }
+                        });
+                        console.log('Found article files from manifest:', discoveredFiles);
+                        return discoveredFiles;
+                    }
+                }
+            } catch (e) {
+                console.log('No manifest.json found, using discovery method');
+            }
+            
+            // Fallback: try common naming patterns
+            for (const name of commonNames) {
+                for (const ext of extensions) {
+                    const filePath = `articles/${name}${ext}`;
+                    try {
+                        const response = await fetch(filePath, { method: 'HEAD' });
+                        if (response.ok) {
+                            discoveredFiles.push(filePath);
+                            console.log(`Discovered article file: ${filePath}`);
+                        }
+                    } catch (e) {
+                        // File doesn't exist, continue
+                    }
+                }
+            }
+            
+            // If we still don't have files, try to probe for numbered files
+            for (let i = 1; i <= 10; i++) {
+                for (const ext of extensions) {
+                    const filePath = `articles/articles${i}${ext}`;
+                    try {
+                        const response = await fetch(filePath, { method: 'HEAD' });
+                        if (response.ok) {
+                            discoveredFiles.push(filePath);
+                            console.log(`Discovered numbered article file: ${filePath}`);
+                        }
+                    } catch (e) {
+                        // File doesn't exist, continue
+                    }
+                }
+            }
+            
+            // If no files found, fall back to DNS.json as default
+            if (discoveredFiles.length === 0) {
+                discoveredFiles.push('articles/DNS.json');
+                console.log('No articles discovered, using default DNS.json');
+            }
+            
+            console.log(`Total discovered article files: ${discoveredFiles.length}`);
+            return discoveredFiles;
+        } catch (error) {
+            console.error('Error discovering article files:', error);
+            // Fallback to known files
+            return ['articles/DNS.json'];
+        }
     }
 
     async init() {
@@ -243,7 +319,8 @@ class BlogLoader {
         // Don't wait for media manager
         this.mediaManager.init();
 
-        // Load articles in parallel
+        // Discover and load articles dynamically
+        this.articleFiles = await this.discoverArticleFiles();
         await this.loadArticles();
         this.clearSkeletons();
 
@@ -339,17 +416,26 @@ class BlogLoader {
 
     async loadArticles() {
         try {
+            console.log('Starting to load articles from:', this.articleFiles);
+            
             // Load articles in parallel instead of sequentially
             const promises = this.articleFiles.map(async (file) => {
                 try {
+                    console.log(`Fetching ${file}...`);
                     const response = await fetch(file);
-                    if (!response.ok) throw new Error(`Failed to load ${file}`);
+                    if (!response.ok) {
+                        console.warn(`Failed to load ${file}: ${response.status} ${response.statusText}`);
+                        return null;
+                    }
                     const data = await response.json();
+                    console.log(`Loaded ${file}:`, data);
                     
                     // Handle both single article and array of articles
                     if (Array.isArray(data)) {
+                        console.log(`File ${file} contains ${data.length} articles`);
                         return data; // Multiple articles in array
                     } else {
+                        console.log(`File ${file} contains 1 article`);
                         return [data]; // Single article, wrap in array
                     }
                 } catch (err) {
@@ -359,18 +445,34 @@ class BlogLoader {
             });
             
             const results = await Promise.all(promises);
+            console.log('Raw results from all files:', results);
+            
             // Flatten all articles into one array and filter out nulls
             this.articles = results
                 .filter(Boolean)
                 .flat()
-                .filter(article => article && article.id); // Ensure valid articles
+                .filter(article => {
+                    if (!article || !article.id) {
+                        console.warn('Filtering out invalid article:', article);
+                        return false;
+                    }
+                    return true;
+                });
+            
+            console.log('Filtered articles:', this.articles);
             
             // Sort only if we have articles
             if (this.articles.length > 0) {
-                this.articles.sort((a, b) => new Date(b.date) - new Date(a.date));
+                this.articles.sort((a, b) => {
+                    const dateA = new Date(a.date);
+                    const dateB = new Date(b.date);
+                    console.log(`Comparing dates: ${a.date} (${dateA}) vs ${b.date} (${dateB})`);
+                    return dateB - dateA;
+                });
+                console.log('Sorted articles by date:', this.articles.map(a => ({ id: a.id, date: a.date })));
             }
             
-            console.log(`Loaded ${this.articles.length} articles total`);
+            console.log(`Final result: Loaded ${this.articles.length} articles total`);
         } catch (error) {
             console.error('Error loading articles:', error);
             this.articles = [];
