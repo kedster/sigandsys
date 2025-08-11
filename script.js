@@ -1,9 +1,9 @@
-        class AdManager {
+class AdManager {
             constructor() {
                 this.adFolders = {
-                    banner: 'ads/banner/',
-                    side: 'ads/side/',
-                    popup: 'ads/popup/'
+                    banner: 'Ads/banner/',
+                    side: 'Ads/side/',
+                    popup: 'Ads/popup/'
                 };
                 this.adImages = {
                     banner: [],

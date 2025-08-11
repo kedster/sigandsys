@@ -35,7 +35,8 @@
 
             <div class="article-list" id="article-list">
                 <!-- Articles will be dynamically loaded here by JavaScript -->
-                <div class="loading">Loading articles...</div>
+                <div class="loading" style="display:none;">Loading articles...</div>
+                <div class="no-articles" style="display:none;">No articles available.</div>
             </div>
         </section>
 
@@ -94,4 +95,9 @@
 
 </body>
     <script src="script.js" defer></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        // Your DOM manipulation code here
+      });
+    </script>
 </html>
