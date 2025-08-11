@@ -7,32 +7,92 @@ class MediaManager {
         };
         this.images = { banner: [], side: [], overlay: [] };
         this.currentIndex = { banner: 0, side: 0, overlay: 0 };
-        this.extensions = ['.jpg', '.jpeg', '.png', '.webp'];
+        this.extensions = ['.jpg', '.png'];
+        this.manifestExtraExt = ['.jpeg', '.webp'];
         this.rotationIntervals = {};
         this.overlayShown = false;
+        this.cache = new Map();
+        this.maxIndexToCheck = 10;
+        this.customPlaceholders = ['custom1', 'custom2', 'custom3'];
+    }
+
+    getTypePrefix(type) {
+        return type === 'overlay' ? 'popup' : type;
+    }
+
+    validateFileName(type, fileName) {
+        try {
+            const prefix = this.getTypePrefix(type);
+            const pattern = new RegExp(`^${prefix}\\d+-[A-Za-z0-9._-]+\\.(jpg|png|jpeg|webp)$`, 'i');
+            return pattern.test(fileName);
+        } catch {
+            return false;
+        }
+    }
+
+    async loadFromManifest(type, folder) {
+        try {
+            const res = await fetch(`${folder}manifest.json`, { cache: 'no-cache' });
+            if (!res.ok) return null;
+            const list = await res.json(); // expects an array of filenames
+            if (!Array.isArray(list)) return null;
+            const filtered = list
+                .filter(name => this.validateFileName(type, name))
+                .map(name => `${folder}${name}`);
+            return filtered;
+        } catch {
+            return null;
+        }
     }
 
     async loadImages() {
-        const commonNames = ['ad1', 'ad2', 'ad3', 'banner1', 'banner2', 'side1', 'side2', 'popup1', 'popup2', '1', '2', '3'];
         for (const [type, folder] of Object.entries(this.folders)) {
+            if (this.cache.has(folder)) {
+                this.images[type] = this.cache.get(folder);
+                continue;
+            }
+
+            // Prefer manifest if present
+            const manifestImages = await this.loadFromManifest(type, folder);
+            if (manifestImages && manifestImages.length) {
+                this.cache.set(folder, manifestImages);
+                this.images[type] = manifestImages;
+                continue;
+            }
+
+            // Fallback probing with strict pattern (prefix + number + '-') and a few placeholders
+            const prefix = this.getTypePrefix(type);
             const found = [];
-            for (const name of commonNames) {
-                for (const ext of this.extensions) {
-                    const path = `${folder}${name}${ext}`;
-                    if (await this.imageLoads(path)) {
-                        found.push(path);
+            for (let i = 1; i <= this.maxIndexToCheck; i++) {
+                let pushed = false;
+                for (const custom of this.customPlaceholders) {
+                    for (const ext of this.extensions) {
+                        const fileName = `${prefix}${i}-${custom}${ext}`;
+                        if (!this.validateFileName(type, fileName)) continue;
+                        const path = `${folder}${fileName}`;
+                        if (await this.quickImageCheck(path)) {
+                            found.push(path);
+                            pushed = true;
+                            break;
+                        }
                     }
+                    if (pushed) break;
                 }
             }
+
+            this.cache.set(folder, found);
             this.images[type] = found;
         }
     }
 
-    imageLoads(url) {
+    quickImageCheck(url) {
         return new Promise((resolve) => {
             const img = new Image();
-            img.onload = () => resolve(true);
-            img.onerror = () => resolve(false);
+            let settled = false;
+            const done = (ok) => { if (!settled) { settled = true; clearTimeout(timeoutId); resolve(ok); } };
+            img.onload = () => done(true);
+            img.onerror = () => done(false);
+            const timeoutId = setTimeout(() => done(false), 1000);
             img.src = url;
         });
     }
@@ -44,6 +104,7 @@ class MediaManager {
         img.className = 'media-banner-img';
         img.src = this.images.banner[0];
         img.alt = 'Featured banner';
+        img.loading = 'lazy';
         container.appendChild(img);
         if (this.images.banner.length > 1) this.startRotation('banner', img);
     }
@@ -55,6 +116,7 @@ class MediaManager {
         img.className = 'media-left-img';
         img.src = this.images.side[0];
         img.alt = 'Left media';
+        img.loading = 'lazy';
         container.appendChild(img);
         if (this.images.side.length > 1) this.startRotation('side', img);
     }
@@ -80,10 +142,11 @@ class MediaManager {
     }
 
     async init() {
-        await this.loadImages();
-        this.displayBanner();
-        this.displayLeft();
-        this.displayOverlay();
+        this.loadImages().then(() => {
+            this.displayBanner();
+            this.displayLeft();
+            this.displayOverlay();
+        });
     }
 }
 
@@ -95,6 +158,7 @@ class BlogLoader {
         this.pageSize = 5;
         this.visibleCount = this.pageSize;
         this.isFiltering = false;
+        this.searchTimeout = null; // For debouncing
         this.init();
     }
 
@@ -106,7 +170,10 @@ class BlogLoader {
         // Show skeletons while loading
         this.renderSkeletons();
 
-        await this.mediaManager.init();
+        // Don't wait for media manager
+        this.mediaManager.init();
+
+        // Load articles in parallel
         await this.loadArticles();
         this.clearSkeletons();
 
@@ -140,12 +207,20 @@ class BlogLoader {
     setupProgressBar() {
         const bar = document.getElementById('progress-bar');
         if (!bar) return;
+        
+        let ticking = false;
         const onScroll = () => {
-            const doc = document.documentElement;
-            const scrollTop = doc.scrollTop || document.body.scrollTop;
-            const height = doc.scrollHeight - doc.clientHeight;
-            const width = height > 0 ? (scrollTop / height) * 100 : 0;
-            bar.style.width = `${width}%`;
+            if (!ticking) {
+                requestAnimationFrame(() => {
+                    const doc = document.documentElement;
+                    const scrollTop = doc.scrollTop || document.body.scrollTop;
+                    const height = doc.scrollHeight - doc.clientHeight;
+                    const width = height > 0 ? (scrollTop / height) * 100 : 0;
+                    bar.style.width = `${width}%`;
+                    ticking = false;
+                });
+                ticking = true;
+            }
         };
         window.addEventListener('scroll', onScroll, { passive: true });
         onScroll();
@@ -154,9 +229,18 @@ class BlogLoader {
     setupBackToTop() {
         const btn = document.getElementById('back-to-top');
         if (!btn) return;
+        
+        let ticking = false;
         const onScroll = () => {
-            const scrolled = window.pageYOffset || document.documentElement.scrollTop;
-            if (scrolled > 300) btn.classList.add('show'); else btn.classList.remove('show');
+            if (!ticking) {
+                requestAnimationFrame(() => {
+                    const scrolled = window.pageYOffset || document.documentElement.scrollTop;
+                    if (scrolled > 300) btn.classList.add('show'); 
+                    else btn.classList.remove('show');
+                    ticking = false;
+                });
+                ticking = true;
+            }
         };
         window.addEventListener('scroll', onScroll, { passive: true });
         btn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
@@ -166,6 +250,7 @@ class BlogLoader {
     renderSkeletons() {
         const articleList = document.getElementById('article-list');
         if (!articleList) return;
+        
         const makeSkeleton = () => `
             <div class="skeleton">
                 <div class="skeleton-line lg"></div>
@@ -184,18 +269,27 @@ class BlogLoader {
 
     async loadArticles() {
         try {
-            const results = await Promise.all(this.articleFiles.map(async (file) => {
+            // Load articles in parallel instead of sequentially
+            const promises = this.articleFiles.map(async (file) => {
                 try {
                     const response = await fetch(file);
                     if (!response.ok) throw new Error(`Failed to load ${file}`);
                     return await response.json();
                 } catch (err) {
+                    console.warn(`Could not load ${file}:`, err);
                     return null;
                 }
-            }));
+            });
+            
+            const results = await Promise.all(promises);
             this.articles = results.filter(Boolean);
-            this.articles.sort((a, b) => new Date(b.date) - new Date(a.date));
-        } catch {
+            
+            // Sort only if we have articles
+            if (this.articles.length > 0) {
+                this.articles.sort((a, b) => new Date(b.date) - new Date(a.date));
+            }
+        } catch (error) {
+            console.error('Error loading articles:', error);
             this.articles = [];
         }
     }
@@ -214,34 +308,49 @@ class BlogLoader {
         const count = this.isFiltering ? this.articles.length : this.visibleCount;
         const items = this.articles.slice(0, Math.min(count, this.articles.length));
 
-        let html = '';
+        // Use DocumentFragment for better performance
+        const fragment = document.createDocumentFragment();
+        
         items.forEach((article, idx) => {
             const formattedDate = this.formatDate(article.date);
             const tagsHTML = article.tags.map(tag => `<span class="tag">${tag}</span>`).join('');
-            html += `
-                <article class="article" id="article-${article.id}" data-id="${article.id}">
-                    <div class="article-header">
-                        <h2 class="article-title">
-                            <a href="#article-${article.id}">${article.title}</a>
-                        </h2>
-                        <div class="article-meta">
-                            <span class="article-author">${article.author}</span>
-                            <span class="article-date">${formattedDate}</span>
-                        </div>
+            
+            const articleEl = document.createElement('article');
+            articleEl.className = 'article';
+            articleEl.id = `article-${article.id}`;
+            articleEl.dataset.id = article.id;
+            
+            articleEl.innerHTML = `
+                <div class="article-header">
+                    <h2 class="article-title">
+                        <a href="#article-${article.id}">${article.title}</a>
+                    </h2>
+                    <div class="article-meta">
+                        <span class="article-author">${article.author}</span>
+                        <span class="article-date">${formattedDate}</span>
                     </div>
-                    <div class="article-excerpt">${article.excerpt}</div>
-                    <div class="article-tags">${tagsHTML}</div>
-                    <div class="article-content" style="display: none;">${article.content}</div>
-                    <div class="article-actions">
-                        <button class="read-more-btn btn btn-primary" data-id="${article.id}">Read More</button>
-                    </div>
-                </article>`;
+                </div>
+                <div class="article-excerpt">${article.excerpt}</div>
+                <div class="article-tags">${tagsHTML}</div>
+                <div class="article-content" style="display: none;">${article.content}</div>
+                <div class="article-actions">
+                    <button class="read-more-btn btn btn-primary" data-id="${article.id}">Read More</button>
+                </div>`;
+            
+            fragment.appendChild(articleEl);
+            
+            // Add banner after first article
             if (idx === 0) {
-                html += `<div class='banner-ad-container'><img src='Ads/Banner/banner1.png' alt='Featured' class='media-banner-img'></div>`;
+                const bannerDiv = document.createElement('div');
+                bannerDiv.className = 'banner-ad-container';
+                bannerDiv.innerHTML = `<img src='Ads/Banner/banner1.png' alt='Featured' class='media-banner-img' loading="lazy">`;
+                fragment.appendChild(bannerDiv);
             }
         });
 
-        articleList.innerHTML = html;
+        // Clear and append all at once
+        articleList.innerHTML = '';
+        articleList.appendChild(fragment);
 
         // Bind read-more buttons
         document.querySelectorAll('.read-more-btn').forEach(btn => {
@@ -291,8 +400,10 @@ class BlogLoader {
         let html = `<a href="#" class="category-item" data-topic="all">Show All</a>`;
         all.forEach(tag => { html += `<a href="#" class="category-item" data-topic="${tag}">${tag}</a>`; });
         topicsGrid.innerHTML = html;
-        document.querySelectorAll('.category-item').forEach(item => {
-            item.addEventListener('click', (e) => {
+        
+        // Use event delegation for better performance
+        topicsGrid.addEventListener('click', (e) => {
+            if (e.target.classList.contains('category-item')) {
                 e.preventDefault();
                 const topic = e.target.dataset.topic;
                 if (topic === 'all') {
@@ -303,7 +414,7 @@ class BlogLoader {
                     this.isFiltering = true;
                     this.filterByTopic(topic);
                 }
-            });
+            }
         });
     }
 
@@ -320,16 +431,21 @@ class BlogLoader {
     setupSearch() {
         const input = document.querySelector('.search-input');
         if (!input) return;
+        
+        // Debounce search for better performance
         input.addEventListener('input', (e) => {
-            const term = e.target.value.trim().toLowerCase();
-            if (term === '') {
-                this.isFiltering = false;
-                this.visibleCount = this.pageSize;
-                this.renderArticles();
-                return;
-            }
-            this.isFiltering = true;
-            this.filterArticles(term);
+            clearTimeout(this.searchTimeout);
+            this.searchTimeout = setTimeout(() => {
+                const term = e.target.value.trim().toLowerCase();
+                if (term === '') {
+                    this.isFiltering = false;
+                    this.visibleCount = this.pageSize;
+                    this.renderArticles();
+                    return;
+                }
+                this.isFiltering = true;
+                this.filterArticles(term);
+            }, 300); // Wait 300ms after user stops typing
         });
     }
 
