@@ -161,17 +161,16 @@ class AdManager {
 
             renderArticles() {
                 const articleList = document.getElementById('article-list');
-                
                 if (this.articles.length === 0) {
                     articleList.innerHTML = '<div class="no-articles">No articles found.</div>';
                     return;
                 }
 
-                const articlesHTML = this.articles.map(article => {
+                let articlesHTML = '';
+                this.articles.forEach((article, idx) => {
                     const formattedDate = this.formatDate(article.date);
                     const tagsHTML = article.tags.map(tag => `<span class="tag">${tag}</span>`).join('');
-                    
-                    return `
+                    articlesHTML += `
                         <article class="article" data-id="${article.id}">
                             <div class="article-header">
                                 <h2 class="article-title">
@@ -190,7 +189,11 @@ class AdManager {
                             </div>
                         </article>
                     `;
-                }).join('');
+                    // Insert banner ad after the first article
+                    if (idx === 0) {
+                        articlesHTML += `<div class='banner-ad-container'><img src='Ads/Banner/banner1.png' alt='Banner Ad' class='banner-ad'></div>`;
+                    }
+                });
 
                 articleList.innerHTML = articlesHTML;
 
@@ -301,16 +304,6 @@ class AdManager {
         }
 
         document.addEventListener('DOMContentLoaded', function() {
-          // Banner Ad
-          const bannerAdContainer = document.getElementById('banner-ad-container');
-          if (bannerAdContainer) {
-            const bannerImg = document.createElement('img');
-            bannerImg.src = 'Ads/Banner/banner1.png';
-            bannerImg.alt = 'Banner Ad';
-            bannerImg.className = 'banner-ad';
-            bannerAdContainer.appendChild(bannerImg);
-          }
-
           // Side Ad
           const sideAdContainer = document.getElementById('side-ad-container');
           if (sideAdContainer) {
