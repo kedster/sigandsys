@@ -167,11 +167,9 @@ class MediaManager {
 
     displayOverlay() {
         if (this.images.overlay.length === 0) return;
-        // schedule first show after 45s, then every 45s
+        // schedule first show after 45s, then never again
         setTimeout(() => this.showOverlayOnce(), 45000);
-        if (!this.rotationIntervals.__overlaySchedule) {
-            this.rotationIntervals.__overlaySchedule = setInterval(() => this.showOverlayOnce(), 45000);
-        }
+        // Remove the setInterval that was repeating every 45 seconds
     }
 
     showOverlayOnce() {
@@ -524,8 +522,8 @@ class BlogLoader {
             
             fragment.appendChild(articleEl);
             
-            // Add banner after first article
-            if (idx === 0) {
+            // Add banner between articles (after every article except the last one)
+            if (idx < items.length - 1) {
                 const bannerDiv = document.createElement('div');
                 bannerDiv.className = 'banner-ad-container';
                 bannerDiv.innerHTML = `<img src='Ads/Banner/banner1.png' alt='Featured' class='media-banner-img' loading="lazy">`;
@@ -733,8 +731,8 @@ class BlogLoader {
             
             fragment.appendChild(articleEl);
             
-            // Add banner after first article
-            if (idx === 0) {
+            // Add banner between articles (after every article except the last one)
+            if (idx < filteredArticles.length - 1) {
                 const bannerDiv = document.createElement('div');
                 bannerDiv.className = 'banner-ad-container';
                 bannerDiv.innerHTML = `<img src='Ads/Banner/banner1.png' alt='Featured' class='media-banner-img' loading="lazy">`;
