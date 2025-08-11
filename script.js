@@ -1,11 +1,132 @@
+        class AdManager {
+            constructor() {
+                this.adFolders = {
+                    banner: 'ads/banner/',
+                    side: 'ads/side/',
+                    popup: 'ads/popup/'
+                };
+                this.adImages = {
+                    banner: [],
+                    side: [],
+                    popup: []
+                };
+                this.currentAdIndex = {
+                    banner: 0,
+                    side: 0,
+                    popup: 0
+                };
+                this.imageExtensions = ['.jpg', '.jpeg', '.png', '.webp'];
+                this.rotationIntervals = {};
+                this.popupShown = false;
+            }
+
+            async loadAdImages() {
+                // Since we can't directly list directory contents, we'll try common image names
+                const commonNames = [
+                    'ad1', 'ad2', 'ad3', 'ad4', 'ad5',
+                    'banner1', 'banner2', 'banner3',
+                    'side1', 'side2', 'side3',
+                    'popup1', 'popup2', 'popup3',
+                    '1', '2', '3', '4', '5'
+                ];
+
+                for (const [folderType, folderPath] of Object.entries(this.adFolders)) {
+                    const images = [];
+                    
+                    for (const name of commonNames) {
+                        for (const ext of this.imageExtensions) {
+                            const imagePath = `${folderPath}${name}${ext}`;
+                            if (await this.imageExists(imagePath)) {
+                                images.push(imagePath);
+                            }
+                        }
+                    }
+                    
+                    this.adImages[folderType] = images;
+                }
+            }
+
+            async imageExists(url) {
+                try {
+                    const response = await fetch(url, { method: 'HEAD' });
+                    return response.ok;
+                } catch {
+                    return false;
+                }
+            }
+
+            displayBannerAds() {
+                const container = document.getElementById('banner-ad-container');
+                if (this.adImages.banner.length > 0) {
+                    const img = document.createElement('img');
+                    img.className = 'banner-ad';
+                    img.src = this.adImages.banner[0];
+                    img.alt = 'Banner Advertisement';
+                    container.appendChild(img);
+
+                    if (this.adImages.banner.length > 1) {
+                        this.startAdRotation('banner', img);
+                    }
+                }
+            }
+
+            displaySideAds() {
+                const container = document.getElementById('side-ad-container');
+                if (this.adImages.side.length > 0) {
+                    const img = document.createElement('img');
+                    img.className = 'side-ad';
+                    img.src = this.adImages.side[0];
+                    img.alt = 'Side Advertisement';
+                    container.appendChild(img);
+
+                    if (this.adImages.side.length > 1) {
+                        this.startAdRotation('side', img);
+                    }
+                }
+            }
+
+            displayPopupAd() {
+                if (this.adImages.popup.length > 0 && !this.popupShown) {
+                    // Show popup after 5 seconds
+                    setTimeout(() => {
+                        const overlay = document.getElementById('popup-overlay');
+                        const img = document.getElementById('popup-ad-image');
+                        img.src = this.adImages.popup[0];
+                        overlay.style.display = 'flex';
+                        this.popupShown = true;
+
+                        if (this.adImages.popup.length > 1) {
+                            this.startAdRotation('popup', img);
+                        }
+                    }, 5000);
+                }
+            }
+
+            startAdRotation(type, imgElement) {
+                this.rotationIntervals[type] = setInterval(() => {
+                    this.currentAdIndex[type] = (this.currentAdIndex[type] + 1) % this.adImages[type].length;
+                    imgElement.src = this.adImages[type][this.currentAdIndex[type]];
+                }, 10000); // Rotate every 10 seconds
+            }
+
+            async init() {
+                await this.loadAdImages();
+                this.displayBannerAds();
+                this.displaySideAds();
+                this.displayPopupAd();
+            }
+        }
+
         class BlogLoader {
             constructor() {
                 this.articles = [];
-                this.articleFiles = ['articles/sample.json', 'articles/sample2.json']; // Add your article files here
+                this.articleFiles = ['articles/sample.json', 'articles/sample2.json'];
+                this.adManager = new AdManager();
                 this.init();
             }
 
             async init() {
+                await this.adManager.init();
                 await this.loadArticles();
                 this.renderArticles();
                 this.renderRecentPosts();
@@ -181,6 +302,11 @@
                     day: 'numeric' 
                 });
             }
+        }
+
+        // Global function for popup close
+        function closePopup() {
+            document.getElementById('popup-overlay').style.display = 'none';
         }
 
         // Initialize the blog when the page loads

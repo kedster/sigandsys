@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SigAndSys</title>
     <link rel="stylesheet" href="styles.css">
+
 </head>
 <body>
     <header class="header">
@@ -22,6 +23,11 @@
         </nav>
     </header>
 
+    <!-- Banner Ad Placement -->
+    <div id="banner-ad-container">
+        <!-- Banner ads will be dynamically loaded here -->
+    </div>
+
     <main class="main-container">
         <section class="content">
             <h1 class="page-title">Latest Posts</h1>
@@ -34,6 +40,11 @@
         </section>
 
         <aside class="sidebar">
+            <!-- Side Ad Placement -->
+            <div id="side-ad-container">
+                <!-- Side ads will be dynamically loaded here -->
+            </div>
+
             <div class="promo-box">
                 <h3 class="promo-title">Newsletter</h3>
                 <p class="promo-text">Get my latest posts and deep dives delivered weekly. No fluff, just practical insights.</p>
@@ -69,9 +80,18 @@
         </aside>
     </main>
 
+    <!-- Popup Ad Overlay -->
+    <div id="popup-overlay" class="popup-overlay">
+        <div class="popup-content">
+            <button class="popup-close" onclick="closePopup()">&times;</button>
+            <img id="popup-ad-image" class="popup-ad" src="" alt="Advertisement">
+        </div>
+    </div>
+
     <footer class="footer">
         <p>&copy; 2025 SigAndSys - All rights reserved</p>
     </footer>
-    <script src="script.js"></script>
+
 </body>
+    <script src="script.js" defer></script>
 </html>
