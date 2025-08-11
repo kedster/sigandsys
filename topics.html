@@ -1,84 +1,125 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Topics - SigAndSys</title>
-  <link rel="stylesheet" href="styles.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Topics - SigAndSys</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <header class="header">
-    <nav class="nav-container">
-      <div class="nav-top">
-        <div class="nav-main">
-          <a href="index.html" class="logo">SigAndSys</a>
-          <ul class="nav-menu">
-            <li><a href="index.html">Home</a></li>
-            <li><a href="archive.html">Archive</a></li>
-            <li><a href="topics.html">Topics</a></li>
-            <li><a href="about.html">About</a></li>
-          </ul>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav-container">
+            <!-- Top row: Logo + Main Nav + Timebar -->
+            <div class="nav-top">
+                <div class="nav-main">
+                    <a href="index.html" class="logo">SigAndSys</a>
+                    <ul class="nav-menu">
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="archive.html">Archive</a></li>
+                        <li><a href="topics.html">Topics</a></li>
+                        <li><a href="about.html">About</a></li>
+                    </ul>
+                </div>
+                <div class="timebar">
+                    <span class="time-item" id="time-ar">AR: --:--:--</span>
+                    <span class="time-item" id="time-ca">CA: --:--:--</span>
+                    <span class="time-item" id="time-ny">NY: --:--:--</span>
+                </div>
+            </div>
+            
+            <!-- Bottom row: Search + Social + Theme -->
+            <div class="nav-bottom">
+                <div class="search-area">
+                    <input type="text" class="search-input" placeholder="Search articles...">
+                </div>
+                <div class="social-links">
+                    <a href="https://linkedin.com" target="_blank" rel="noopener">LI</a>
+                    <a href="https://github.com" target="_blank" rel="noopener">GH</a>
+                    <a href="https://dev.to" target="_blank" rel="noopener">DT</a>
+                    <a href="https://daily.dev" target="_blank" rel="noopener">DD</a>
+                    <a href="https://medium.com" target="_blank" rel="noopener">MD</a>
+                    <a href="https://youtube.com" target="_blank" rel="noopener">YT</a>
+                </div>
+                <button id="theme-toggle" class="theme-toggle btn">🌙</button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Progress Bar -->
+    <div id="progress-bar"></div>
+
+    <!-- Main Content -->
+    <main class="main-container">
+        <!-- Left Ad Panel -->
+        <div id="side-ad-container">
+            <!-- Side ads will be loaded here -->
         </div>
-        <div class="timebar" aria-label="Current times">
-          <span id="time-ar" class="time-item" title="Arkansas (CT)">AR: --:--</span>
-          <span id="time-ca" class="time-item" title="California (PT)">CA: --:--</span>
-          <span id="time-ny" class="time-item" title="New York (ET)">NY: --:--</span>
+
+        <!-- Content Area -->
+        <div class="content">
+            <div class="content-banner">
+                <div class="banner-content">
+                    <h3>Browse Articles by Topic</h3>
+                    <p>Explore our content organized by topics and categories. Click on any topic to see related articles.</p>
+                </div>
+            </div>
+
+            <!-- Topics Grid -->
+            <div class="topics-section">
+                <h2 class="section-title">All Topics</h2>
+                <div id="topics-grid" class="topics-grid">
+                    <!-- Topics will be dynamically loaded here -->
+                </div>
+            </div>
+
+            <!-- Articles by Topic -->
+            <div class="articles-section">
+                <h2 class="section-title">Articles</h2>
+                <div id="article-list">
+                    <!-- Articles will be loaded here -->
+                </div>
+                <div id="load-more-container"></div>
+            </div>
         </div>
-      </div>
-      <div class="nav-bottom">
-        <div class="search-area">
-          <input type="text" class="search-input" placeholder="Search posts..." />
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-section">
+                <h3 class="sidebar-title">Recent Posts</h3>
+                <ul id="recent-posts" class="recent-list">
+                    <!-- Recent posts will be loaded here -->
+                </ul>
+            </div>
+
+            <div class="sidebar-section">
+                <h3 class="sidebar-title">Popular Topics</h3>
+                <div id="popular-topics" class="category-grid">
+                    <!-- Popular topics will be loaded here -->
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <h3 class="sidebar-title">About</h3>
+                <p class="about-text">
+                    SigAndSys is your source for practical insights on systems, networking, and development. 
+                    Browse topics to find articles that match your interests.
+                </p>
+            </div>
+        </aside>
+    </main>
+
+    <!-- Popup Advertisement -->
+    <div id="popup-overlay" class="popup-overlay">
+        <div class="popup-ad">
+            <button class="popup-close" onclick="closePopup()">&times;</button>
+            <img id="popup-ad-image" src="" alt="Advertisement">
         </div>
-        <div class="social-links" aria-label="Social links">
-          <a href="https://www.linkedin.com/" target="_blank" rel="noopener" title="LinkedIn" aria-label="LinkedIn">in</a>
-          <a href="https://github.com/" target="_blank" rel="noopener" title="GitHub" aria-label="GitHub">GH</a>
-          <a href="https://dev.to/" target="_blank" rel="noopener" title="Dev.to" aria-label="Dev.to">DEV</a>
-          <a href="https://daily.dev/" target="_blank" rel="noopener" title="daily.dev" aria-label="daily.dev">DD</a>
-          <a href="https://medium.com/" target="_blank" rel="noopener" title="Medium" aria-label="Medium">M</a>
-          <a href="https://youtube.com/" target="_blank" rel="noopener" title="YouTube" aria-label="YouTube">YT</a>
-        </div>
-        <button id="theme-toggle" class="theme-toggle btn" aria-label="Toggle theme">🌙</button>
-      </div>
-    </nav>
-  </header>
-
-  <div id="progress-bar"></div>
-
-  <div id="media-banner"></div>
-
-  <main class="main-container">
-    <div id="media-left"></div>
-
-    <section class="content">
-      <h1 class="page-title">Topics</h1>
-      <p class="page-subtitle">Filter posts by topic</p>
-
-      <div id="topics-grid" class="category-grid"></div>
-      <div id="article-list" class="article-list" style="margin-top: var(--spacing-2xl);"></div>
-      <div id="load-more-container"></div>
-    </section>
-
-    <aside class="sidebar">
-      <div class="sidebar-section">
-        <h3 class="sidebar-title">Recent Posts</h3>
-        <ul id="recent-posts" class="recent-list"></ul>
-      </div>
-    </aside>
-  </main>
-
-  <div id="overlay" class="overlay">
-    <div class="popup-content">
-      <button class="overlay-close" onclick="closePopup()">&times;</button>
-      <img id="overlay-image" class="overlay-media" src="" alt="Media">
     </div>
-  </div>
 
-  <footer class="footer">
-    <p>&copy; 2025 SigAndSys - All rights reserved</p>
-  </footer>
+    <!-- Back to Top Button -->
+    <button id="back-to-top" class="back-to-top">↑</button>
 
-  <button id="back-to-top" class="back-to-top" aria-label="Back to top">↑</button>
-
-  <script src="script.js" defer></script>
+    <script src="script.js"></script>
 </body>
 </html>

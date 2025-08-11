@@ -581,15 +581,33 @@ class BlogLoader {
     renderTopics() {
         const topicsGrid = document.getElementById('topics-grid');
         if (!topicsGrid) return;
-        const all = [...new Set(this.articles.flatMap(a => a.tags))];
-        let html = `<a href="#" class="category-item" data-topic="all">Show All</a>`;
-        all.forEach(tag => { html += `<a href="#" class="category-item" data-topic="${tag}">${tag}</a>`; });
+        
+        // Get all unique tags from articles
+        const allTags = [...new Set(this.articles.flatMap(a => a.tags))];
+        
+        // Create HTML for topics
+        let html = `<a href="#" class="category-item active" data-topic="all">Show All</a>`;
+        allTags.forEach(tag => { 
+            html += `<a href="#" class="category-item" data-topic="${tag}">${tag}</a>`; 
+        });
         topicsGrid.innerHTML = html;
+        
+        // Also populate popular topics in sidebar
+        this.renderPopularTopics(allTags);
         
         // Use event delegation for better performance
         topicsGrid.addEventListener('click', (e) => {
             if (e.target.classList.contains('category-item')) {
                 e.preventDefault();
+                
+                // Remove active class from all topics
+                topicsGrid.querySelectorAll('.category-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+                
+                // Add active class to clicked topic
+                e.target.classList.add('active');
+                
                 const topic = e.target.dataset.topic;
                 if (topic === 'all') {
                     this.isFiltering = false;
@@ -603,14 +621,135 @@ class BlogLoader {
         });
     }
 
-    filterByTopic(topic) {
-        const articles = document.querySelectorAll('.article');
-        articles.forEach(article => {
-            const tags = Array.from(article.querySelectorAll('.tag')).map(tag => tag.textContent);
-            article.style.display = tags.includes(topic) ? 'block' : 'none';
+    renderPopularTopics(allTags) {
+        const popularTopics = document.getElementById('popular-topics');
+        if (!popularTopics) return;
+        
+        // Show top 6 most common tags
+        const tagCounts = {};
+        this.articles.forEach(article => {
+            if (article.tags) {
+                article.tags.forEach(tag => {
+                    tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+                });
+            }
         });
+        
+        const sortedTags = Object.entries(tagCounts)
+            .sort(([,a], [,b]) => b - a)
+            .slice(0, 6)
+            .map(([tag]) => tag);
+        
+        let html = '';
+        sortedTags.forEach(tag => {
+            html += `<a href="#" class="category-item" data-topic="${tag}">${tag}</a>`;
+        });
+        popularTopics.innerHTML = html;
+        
+        // Add click handlers for popular topics
+        popularTopics.addEventListener('click', (e) => {
+            if (e.target.classList.contains('category-item')) {
+                e.preventDefault();
+                
+                // Update main topics grid to show this topic as active
+                const mainTopicsGrid = document.getElementById('topics-grid');
+                if (mainTopicsGrid) {
+                    mainTopicsGrid.querySelectorAll('.category-item').forEach(item => {
+                        item.classList.remove('active');
+                        if (item.dataset.topic === e.target.dataset.topic) {
+                            item.classList.add('active');
+                        }
+                    });
+                }
+                
+                // Filter articles
+                this.isFiltering = true;
+                this.filterByTopic(e.target.dataset.topic);
+            }
+        });
+    }
+
+    filterByTopic(topic) {
+        console.log(`Filtering articles by topic: ${topic}`);
+        
+        // Filter articles by the selected topic
+        const filteredArticles = this.articles.filter(article => 
+            article.tags && article.tags.includes(topic)
+        );
+        
+        console.log(`Found ${filteredArticles.length} articles for topic: ${topic}`);
+        
+        // Update the visible articles
+        this.visibleCount = filteredArticles.length;
+        
+        // Re-render articles with filtered results
+        this.renderFilteredArticles(filteredArticles);
+        
+        // Hide load more button when filtering
         const loadMoreContainer = document.getElementById('load-more-container');
         if (loadMoreContainer) loadMoreContainer.innerHTML = '';
+    }
+
+    renderFilteredArticles(filteredArticles) {
+        const articleList = document.getElementById('article-list');
+        if (!articleList) return;
+
+        if (filteredArticles.length === 0) {
+            articleList.innerHTML = `<div class="no-articles">
+                <h3>No articles found for this topic</h3>
+                <p>Try selecting a different topic or use "Show All" to see all articles.</p>
+            </div>`;
+            return;
+        }
+
+        // Use DocumentFragment for better performance
+        const fragment = document.createDocumentFragment();
+        
+        filteredArticles.forEach((article, idx) => {
+            const formattedDate = this.formatDate(article.date);
+            const tagsHTML = article.tags.map(tag => `<span class="tag">${tag}</span>`).join('');
+            
+            const articleEl = document.createElement('article');
+            articleEl.className = 'article';
+            articleEl.id = `article-${article.id}`;
+            articleEl.dataset.id = article.id;
+            
+            articleEl.innerHTML = `
+                <div class="article-header">
+                    <h2 class="article-title">
+                        <a href="#article-${article.id}">${article.title}</a>
+                    </h2>
+                    <div class="article-meta">
+                        <span class="article-author">${article.author}</span>
+                        <span class="article-date">${formattedDate}</span>
+                    </div>
+                </div>
+                <div class="article-excerpt">${article.excerpt}</div>
+                <div class="article-tags">${tagsHTML}</div>
+                <div class="article-content" style="display: none;">${article.content}</div>
+                <div class="article-actions">
+                    <button class="read-more-btn btn btn-primary" data-id="${article.id}">Read More</button>
+                </div>`;
+            
+            fragment.appendChild(articleEl);
+            
+            // Add banner after first article
+            if (idx === 0) {
+                const bannerDiv = document.createElement('div');
+                bannerDiv.className = 'banner-ad-container';
+                bannerDiv.innerHTML = `<img src='Ads/Banner/banner1.png' alt='Featured' class='media-banner-img' loading="lazy">`;
+                fragment.appendChild(bannerDiv);
+            }
+        });
+
+        // Clear and append all at once
+        articleList.innerHTML = '';
+        articleList.appendChild(fragment);
+
+        // Bind read-more buttons
+        document.querySelectorAll('.read-more-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => this.toggleArticleContent(e.target.dataset.id));
+        });
     }
 
     setupSearch() {
