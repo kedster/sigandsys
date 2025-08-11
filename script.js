@@ -120,26 +120,27 @@ class MediaManager {
     }
 
     displayBanner() {
-        const container = document.getElementById('media-banner') || document.getElementById('banner-ad-container');
-        if (!container || this.images.banner.length === 0) return;
-        const entry = this.images.banner[0];
-        const href = entry.href || container.dataset.link || '#';
+        // Disabled top banner - banners only appear between articles now
+        // const container = document.getElementById('media-banner') || document.getElementById('banner-ad-container');
+        // if (!container || this.images.banner.length === 0) return;
+        // const entry = this.images.banner[0];
+        // const href = entry.href || container.dataset.link || '#';
 
-        const a = document.createElement('a');
-        a.href = href;
-        a.target = '_blank';
-        a.rel = 'noopener noreferrer';
+        // const a = document.createElement('a');
+        // a.href = href;
+        // a.target = '_blank';
+        // a.rel = 'noopener noreferrer';
 
-        const img = document.createElement('img');
-        img.className = 'media-banner-img';
-        img.src = entry.src;
-        img.alt = 'Featured banner';
-        img.loading = 'lazy';
+        // const img = document.createElement('img');
+        // img.className = 'media-banner-img';
+        // img.src = entry.src;
+        // img.alt = 'Featured banner';
+        // img.loading = 'lazy';
 
-        a.appendChild(img);
-        container.appendChild(a);
+        // a.appendChild(img);
+        // container.appendChild(a);
 
-        if (this.images.banner.length > 1) this.startRotation('banner', img, a);
+        // if (this.images.banner.length > 1) this.startRotation('banner', img, a);
     }
 
     displayLeft() {
