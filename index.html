@@ -19,25 +19,26 @@
             <div class="search-area">
                 <input type="text" class="search-input" placeholder="Search posts...">
             </div>
+            <button id="theme-toggle" class="theme-toggle btn" aria-label="Toggle theme">🌙</button>
         </nav>
     </header>
 
-    <!-- Banner Ad Placement -->
-    <div id="banner-ad-container"></div>
+    <div id="progress-bar"></div>
+
+    <div id="media-banner"></div>
 
     <main class="main-container">
-        <!-- Side Ad Placement (Left Column) -->
-        <div id="side-ad-container"></div>
+        <div id="media-left"></div>
 
         <section class="content">
             <h1 class="page-title">Latest Posts</h1>
             <p class="page-subtitle">Thoughts on systems, signals, and everything in between</p>
 
             <div class="article-list" id="article-list">
-                <!-- Articles will be dynamically loaded here by JavaScript -->
                 <div class="loading" style="display:none;">Loading articles...</div>
                 <div class="no-articles" style="display:none;">No articles available.</div>
             </div>
+            <div id="load-more-container"></div>
         </section>
 
         <aside class="sidebar">
@@ -72,17 +73,18 @@
         </aside>
     </main>
 
-    <!-- Popup Ad Overlay -->
-    <div id="popup-overlay" class="popup-overlay">
+    <div id="overlay" class="overlay">
         <div class="popup-content">
-            <button class="popup-close" onclick="closePopup()">&times;</button>
-            <img id="popup-ad-image" class="popup-ad" src="" alt="Advertisement">
+            <button class="overlay-close" onclick="closePopup()">&times;</button>
+            <img id="overlay-image" class="overlay-media" src="" alt="Media">
         </div>
     </div>
 
     <footer class="footer">
         <p>&copy; 2025 SigAndSys - All rights reserved</p>
     </footer>
+
+    <button id="back-to-top" class="back-to-top" aria-label="Back to top">↑</button>
 
     <script src="script.js" defer></script>
 </body>

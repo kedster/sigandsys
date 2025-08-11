@@ -19,19 +19,23 @@
       <div class="search-area">
         <input type="text" class="search-input" placeholder="Search posts..." />
       </div>
+      <button id="theme-toggle" class="theme-toggle btn" aria-label="Toggle theme">🌙</button>
     </nav>
   </header>
 
-  <div id="banner-ad-container"></div>
+  <div id="progress-bar"></div>
+
+  <div id="media-banner"></div>
 
   <main class="main-container">
-    <div id="side-ad-container"></div>
+    <div id="media-left"></div>
 
     <section class="content">
       <h1 class="page-title">Archive</h1>
       <p class="page-subtitle">Browse all published posts</p>
 
       <div id="article-list" class="article-list"></div>
+      <div id="load-more-container"></div>
     </section>
 
     <aside class="sidebar">
@@ -47,16 +51,18 @@
     </aside>
   </main>
 
-  <div id="popup-overlay" class="popup-overlay">
+  <div id="overlay" class="overlay">
     <div class="popup-content">
-      <button class="popup-close" onclick="closePopup()">&times;</button>
-      <img id="popup-ad-image" class="popup-ad" src="" alt="Advertisement">
+      <button class="overlay-close" onclick="closePopup()">&times;</button>
+      <img id="overlay-image" class="overlay-media" src="" alt="Media">
     </div>
   </div>
 
   <footer class="footer">
     <p>&copy; 2025 SigAndSys - All rights reserved</p>
   </footer>
+
+  <button id="back-to-top" class="back-to-top" aria-label="Back to top">↑</button>
 
   <script src="script.js" defer></script>
 </body>
