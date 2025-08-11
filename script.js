@@ -318,3 +318,8 @@ class AdManager {
         document.addEventListener('DOMContentLoaded', function() {
           new BlogLoader();
         });
+
+        window.closePopup = function() {
+            const popupOverlay = document.getElementById('popup-overlay');
+            if (popupOverlay) popupOverlay.style.display = 'none';
+        };

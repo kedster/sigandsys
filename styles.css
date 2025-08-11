@@ -369,32 +369,14 @@ body {
 }
 
 /* Ensure visibility for key elements */
-.article, .article-list, .category-item, .sidebar {
-    display: initial !important;
+.article, .article-list, .sidebar {
+    display: block !important;
     visibility: visible !important;
 }
 
-.article-list {
-    background: #fff;
-    z-index: 2;
-}
-
-.article {
-    color: #1a1a1a;
-    background: #f9f9f9;
-    z-index: 2;
-}
-
 .category-item {
-    color: #fff;
-    background: #333;
-    z-index: 2;
-}
-
-.sidebar {
-    color: #fff;
-    background: #1a1a1a;
-    z-index: 2;
+    display: inline-block !important;
+    visibility: visible !important;
 }
 
 .content {
