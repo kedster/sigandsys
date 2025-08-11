@@ -5,17 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SigAndSys</title>
     <link rel="stylesheet" href="styles.css">
-
 </head>
 <body>
     <header class="header">
         <nav class="nav-container">
-            <a href="#" class="logo">SigAndSys</a>
+            <a href="index.html" class="logo">SigAndSys</a>
             <ul class="nav-menu">
-                <li><a href="#home">Home</a></li>
-                <li><a href="#archive">Archive</a></li>
-                <li><a href="#topics">Topics</a></li>
-                <li><a href="#about">About</a></li>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="archive.html">Archive</a></li>
+                <li><a href="topics.html">Topics</a></li>
+                <li><a href="about.html">About</a></li>
             </ul>
             <div class="search-area">
                 <input type="text" class="search-input" placeholder="Search posts...">
@@ -24,11 +23,12 @@
     </header>
 
     <!-- Banner Ad Placement -->
-    <div id="banner-ad-container">
-        <!-- Banner ads will be dynamically loaded here -->
-    </div>
+    <div id="banner-ad-container"></div>
 
     <main class="main-container">
+        <!-- Side Ad Placement (Left Column) -->
+        <div id="side-ad-container"></div>
+
         <section class="content">
             <h1 class="page-title">Latest Posts</h1>
             <p class="page-subtitle">Thoughts on systems, signals, and everything in between</p>
@@ -41,35 +41,26 @@
         </section>
 
         <aside class="sidebar">
-            <!-- Side Ad Placement -->
-            <div id="side-ad-container">
-                <!-- Side ads will be dynamically loaded here -->
-            </div>
-
             <div class="promo-box">
                 <h3 class="promo-title">Newsletter</h3>
                 <p class="promo-text">Get my latest posts and deep dives delivered weekly. No fluff, just practical insights.</p>
-                <a href="#" class="promo-link">Subscribe</a>
+                <a href="about.html#newsletter" class="promo-link">Subscribe</a>
             </div>
 
             <div class="sidebar-section">
                 <h3 class="sidebar-title">Recent Posts</h3>
-                <ul class="recent-list" id="recent-posts">
-                    <!-- Recent posts will be dynamically populated -->
-                </ul>
+                <ul class="recent-list" id="recent-posts"></ul>
             </div>
 
             <div class="promo-box">
                 <h3 class="promo-title">Case Studies</h3>
                 <p class="promo-text">Real-world examples of system design decisions and their consequences.</p>
-                <a href="#" class="promo-link">Explore</a>
+                <a href="archive.html" class="promo-link">Explore</a>
             </div>
 
             <div class="sidebar-section">
                 <h3 class="sidebar-title">Topics</h3>
-                <div class="category-grid" id="topics-grid">
-                    <!-- Topics will be dynamically populated -->
-                </div>
+                <div class="category-grid" id="topics-grid"></div>
             </div>
 
             <div class="sidebar-section">
@@ -93,11 +84,6 @@
         <p>&copy; 2025 SigAndSys - All rights reserved</p>
     </footer>
 
-</body>
     <script src="script.js" defer></script>
-    <script>
-      document.addEventListener('DOMContentLoaded', function() {
-        // Your DOM manipulation code here
-      });
-    </script>
+</body>
 </html>

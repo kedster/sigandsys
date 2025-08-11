@@ -21,7 +21,6 @@ class AdManager {
             }
 
             async loadAdImages() {
-                // Since we can't directly list directory contents, we'll try common image names
                 const commonNames = [
                     'ad1', 'ad2', 'ad3', 'ad4', 'ad5',
                     'banner1', 'banner2', 'banner3',
@@ -32,7 +31,6 @@ class AdManager {
 
                 for (const [folderType, folderPath] of Object.entries(this.adFolders)) {
                     const images = [];
-                    
                     for (const name of commonNames) {
                         for (const ext of this.imageExtensions) {
                             const imagePath = `${folderPath}${name}${ext}`;
@@ -41,7 +39,6 @@ class AdManager {
                             }
                         }
                     }
-                    
                     this.adImages[folderType] = images;
                 }
             }
@@ -57,6 +54,7 @@ class AdManager {
 
             displayBannerAds() {
                 const container = document.getElementById('banner-ad-container');
+                if (!container) return;
                 if (this.adImages.banner.length > 0) {
                     const img = document.createElement('img');
                     img.className = 'banner-ad';
@@ -72,6 +70,7 @@ class AdManager {
 
             displaySideAds() {
                 const container = document.getElementById('side-ad-container');
+                if (!container) return;
                 if (this.adImages.side.length > 0) {
                     const img = document.createElement('img');
                     img.className = 'side-ad';
@@ -87,10 +86,10 @@ class AdManager {
 
             displayPopupAd() {
                 if (this.adImages.popup.length > 0 && !this.popupShown) {
-                    // Show popup after 5 seconds
                     setTimeout(() => {
                         const overlay = document.getElementById('popup-overlay');
                         const img = document.getElementById('popup-ad-image');
+                        if (!overlay || !img) return;
                         img.src = this.adImages.popup[0];
                         overlay.style.display = 'flex';
                         this.popupShown = true;
@@ -106,7 +105,7 @@ class AdManager {
                 this.rotationIntervals[type] = setInterval(() => {
                     this.currentAdIndex[type] = (this.currentAdIndex[type] + 1) % this.adImages[type].length;
                     imgElement.src = this.adImages[type][this.currentAdIndex[type]];
-                }, 10000); // Rotate every 10 seconds
+                }, 10000);
             }
 
             async init() {
@@ -140,10 +139,8 @@ class AdManager {
                     const promises = this.articleFiles.map(async (file) => {
                         try {
                             const response = await fetch(file);
-                            console.log('Fetching article file:', file, 'Status:', response.status);
                             if (!response.ok) throw new Error(`Failed to load ${file}`);
                             const json = await response.json();
-                            console.log('Loaded article:', json);
                             return json;
                         } catch (error) {
                             console.warn(`Could not load ${file}:`, error);
@@ -153,8 +150,6 @@ class AdManager {
 
                     const results = await Promise.all(promises);
                     this.articles = results.filter(article => article !== null);
-                    console.log('All loaded articles:', this.articles);
-                    // Sort articles by date (newest first)
                     this.articles.sort((a, b) => new Date(b.date) - new Date(a.date));
                 } catch (error) {
                     console.error('Error loading articles:', error);
@@ -164,7 +159,7 @@ class AdManager {
 
             renderArticles() {
                 const articleList = document.getElementById('article-list');
-                console.log('Rendering articles:', this.articles);
+                if (!articleList) return;
                 if (this.articles.length === 0) {
                     articleList.innerHTML = '<div class="no-articles">No articles found.</div>';
                     return;
@@ -175,7 +170,7 @@ class AdManager {
                     const formattedDate = this.formatDate(article.date);
                     const tagsHTML = article.tags.map(tag => `<span class="tag">${tag}</span>`).join('');
                     articlesHTML += `
-                        <article class="article" data-id="${article.id}">
+                        <article class="article" id="article-${article.id}" data-id="${article.id}">
                             <div class="article-header">
                                 <h2 class="article-title">
                                     <a href="#article-${article.id}">${article.title}</a>
@@ -189,20 +184,17 @@ class AdManager {
                             <div class="article-tags">${tagsHTML}</div>
                             <div class="article-content" style="display: none;">${article.content}</div>
                             <div class="article-actions">
-                                <button class="read-more-btn" data-id="${article.id}">Read More</button>
+                                <button class="read-more-btn btn btn-primary" data-id="${article.id}">Read More</button>
                             </div>
                         </article>
                     `;
-                    // Insert banner ad after the first article
                     if (idx === 0) {
                         articlesHTML += `<div class='banner-ad-container'><img src='Ads/Banner/banner1.png' alt='Banner Ad' class='banner-ad'></div>`;
                     }
                 });
 
                 articleList.innerHTML = articlesHTML;
-                console.log('Rendered articles HTML:', articleList.innerHTML);
 
-                // Add click handlers for read more buttons
                 document.querySelectorAll('.read-more-btn').forEach(btn => {
                     btn.addEventListener('click', (e) => {
                         this.toggleArticleContent(e.target.dataset.id);
@@ -212,9 +204,10 @@ class AdManager {
 
             toggleArticleContent(articleId) {
                 const article = document.querySelector(`[data-id="${articleId}"]`);
+                if (!article) return;
                 const content = article.querySelector('.article-content');
                 const btn = article.querySelector('.read-more-btn');
-                
+                if (!content || !btn) return;
                 if (content.style.display === 'none') {
                     content.style.display = 'block';
                     btn.textContent = 'Read Less';
@@ -226,8 +219,9 @@ class AdManager {
 
             renderRecentPosts() {
                 const recentList = document.getElementById('recent-posts');
+                if (!recentList) return;
                 const recentArticles = this.articles.slice(0, 4);
-                
+
                 const recentHTML = recentArticles.map(article => `
                     <li>
                         <a href="#article-${article.id}">${article.title}</a>
@@ -240,6 +234,7 @@ class AdManager {
 
             renderTopics() {
                 const topicsGrid = document.getElementById('topics-grid');
+                if (!topicsGrid) return;
                 const allTags = [...new Set(this.articles.flatMap(article => article.tags))];
 
                 let topicsHTML = `<a href="#" class="category-item" data-topic="all">Show All</a>`;
@@ -248,9 +243,7 @@ class AdManager {
                 });
 
                 topicsGrid.innerHTML = topicsHTML;
-                console.log('Rendered topics HTML:', topicsGrid.innerHTML);
 
-                // Add click handlers for topic filtering
                 document.querySelectorAll('.category-item').forEach(item => {
                     item.addEventListener('click', (e) => {
                         e.preventDefault();
@@ -274,6 +267,7 @@ class AdManager {
 
             setupSearch() {
                 const searchInput = document.querySelector('.search-input');
+                if (!searchInput) return;
                 searchInput.addEventListener('input', (e) => {
                     const term = e.target.value.toLowerCase();
                     this.filterArticles(term);
@@ -282,12 +276,10 @@ class AdManager {
 
             filterArticles(term) {
                 const articles = document.querySelectorAll('.article');
-                
                 articles.forEach(article => {
                     const title = article.querySelector('.article-title').textContent.toLowerCase();
                     const excerpt = article.querySelector('.article-excerpt').textContent.toLowerCase();
                     const tags = Array.from(article.querySelectorAll('.tag')).map(tag => tag.textContent.toLowerCase()).join(' ');
-                    
                     if (title.includes(term) || excerpt.includes(term) || tags.includes(term) || term === '') {
                         article.style.display = 'block';
                     } else {
@@ -297,11 +289,12 @@ class AdManager {
             }
 
             setupNavigation() {
-                // Smooth scroll for nav links
                 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                     anchor.addEventListener('click', function (e) {
+                        const href = this.getAttribute('href');
+                        if (!href || href === '#') return;
                         e.preventDefault();
-                        const target = document.querySelector(this.getAttribute('href'));
+                        const target = document.querySelector(href);
                         if (target) {
                             target.scrollIntoView({ behavior: 'smooth' });
                         }
