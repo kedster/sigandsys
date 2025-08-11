@@ -1,0 +1,10 @@
+{
+  "id": "sample",
+  "title": "Getting Started with Systems Engineering",
+  "excerpt": "An overview of systems engineering principles and how to apply them in real-world projects.",
+  "author": "John Smith",
+  "date": "2025-08-09",
+  "tags": ["systems engineering", "introduction", "projects"],
+  "content": "<h2>What is Systems Engineering?</h2><p>Systems engineering is an interdisciplinary approach to designing and managing complex systems throughout their life cycles.</p><h2>Core Principles</h2><ul><li>Requirements Analysis</li><li>System Architecture</li><li>Integration and Testing</li></ul><h2>Why Use Systems Engineering?</h2><p>It helps ensure that all aspects of a project are considered and integrated into a unified whole.</p>",
+  "coverImage": "images/systems-engineering-intro.jpg"
+}
