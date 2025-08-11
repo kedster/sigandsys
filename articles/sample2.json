@@ -1,10 +1,10 @@
 {
-  "id": "sample2",
-  "title": "Understanding Signal Processing Basics",
-  "excerpt": "A quick introduction to the fundamental concepts of signal processing for engineers and enthusiasts.",
-  "author": "Jane Doe",
+  "id": "incident-response-basics-seth",
+  "title": "Incident Response Basics (For When the Alerts Won’t Stop)",
+  "excerpt": "A boots-on-the-ground guide to handling security incidents without losing your mind or your uptime.",
+  "author": "Seth",
   "date": "2025-08-10",
-  "tags": ["signal processing", "basics", "engineering"],
-  "content": "<h2>Introduction</h2><p>Signal processing is a field of engineering that focuses on the analysis, manipulation, and interpretation of signals. Signals can be audio, video, sensor data, and more.</p><h2>Key Concepts</h2><ul><li>Sampling</li><li>Filtering</li><li>Fourier Transform</li></ul><h2>Applications</h2><p>Signal processing is used in audio engineering, telecommunications, medical imaging, and many other domains.</p>",
-  "coverImage": "images/signal-processing-basics.jpg"
+  "tags": ["cybersecurity", "incident response", "security operations", "practical"],
+  "content": "<h2>Introduction</h2><p>Incident response isn’t just a flowchart in a security policy — it’s the reality check you get when an alert hits at 2 AM and you have to figure out if it’s a false positive or the start of a breach. This is the discipline of identifying, containing, eradicating, and recovering from security events without turning your network into a crime scene.</p><h2>Key Concepts That Actually Matter</h2><ul><li><strong>Detection:</strong> If you can’t see it, you can’t fix it. Build visibility into logs, endpoints, and network traffic. Automate where possible, but always verify.</li><li><strong>Containment:</strong> Stop the bleeding without shutting down the patient. Sometimes that means isolating a host, sometimes that means rate-limiting network traffic.</li><li><strong>Eradication and Recovery:</strong> Kill the root cause, not just the symptoms. Then get systems back online without reintroducing the problem.</li></ul><h2>Real-World Applications</h2><p>From phishing campaigns and credential stuffing attacks to ransomware outbreaks, incident response is where theory meets chaos. Whether you’re in healthcare guarding HIPAA data or in retail keeping POS systems secure, the approach is the same: know your environment, have a plan, and execute fast.</p>",
+  "coverImage": "images/incident-response-basics.jpg"
 }
