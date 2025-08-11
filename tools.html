@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tools & Resources - SigAndSys</title>
+    <meta name="description" content="Essential tools, resources, and processes I use for systems engineering and development">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="header">
+        <nav class="nav-container">
+            <div class="nav-top">
+                <div class="nav-main">
+                    <a href="index.html" class="logo">SigAndSys</a>
+                    <ul class="nav-menu">
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="archive.html">Archive</a></li>
+                        <li><a href="topics.html">Topics</a></li>
+                        <li><a href="tools.html" class="active">Tools</a></li>
+                        <li><a href="about.html">About</a></li>
+                    </ul>
+                </div>
+                <div class="timebar" aria-label="Current times">
+                    <span id="time-ar" class="time-item" title="Arkansas (CT)">AR: --:--</span>
+                    <span id="time-ca" class="time-item" title="California (PT)">CA: --:--</span>
+                    <span id="time-ny" class="time-item" title="New York (ET)">NY: --:--</span>
+                </div>
+            </div>
+            <div class="nav-bottom">
+                <div class="search-area">
+                    <input type="text" class="search-input" placeholder="Search tools...">
+                </div>
+                <div class="social-links" aria-label="Social links">
+                    <a href="https://www.linkedin.com/in/seth-keddy/" target="_blank" rel="noopener" title="LinkedIn" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                    <a href="https://github.com/kedster" target="_blank" rel="noopener" title="GitHub" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                    <a href="https://dev.to/kedster" target="_blank" rel="noopener" title="Dev.to" aria-label="Dev.to"><i class="fab fa-dev"></i></a>
+                    <a href="https://app.daily.dev/sethkeddy/posts" target="_blank" rel="noopener" title="daily.dev" aria-label="daily.dev"><i class="fas fa-newspaper"></i></a>
+                    <a href="https://medium.com/@sethkeddy" target="_blank" rel="noopener" title="Medium" aria-label="Medium"><i class="fab fa-medium"></i></a>
+                    <a href="https://www.youtube.com/@KedsterLive" target="_blank" rel="noopener" title="YouTube" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                </div>
+                <button id="theme-toggle" class="theme-toggle btn" aria-label="Toggle theme">🌙</button>
+            </div>
+        </nav>
+    </header>
+
+    <div id="progress-bar"></div>
+
+    <main class="main-container">
+        <div id="media-left"></div>
+
+        <section class="content">
+            <div class="page-header">
+                <h1 class="page-title">Tools & Resources</h1>
+                <p class="page-subtitle">Essential tools, processes, and resources I use for systems engineering and development</p>
+            </div>
+
+            <div class="tools-intro">
+                <p>This is my curated collection of tools, resources, and processes that have proven valuable in my work. Each tool includes a brief description of how I use it and why it's worth your attention.</p>
+            </div>
+
+            <div class="tools-filter">
+                <button class="filter-btn active" data-category="all">All Tools</button>
+                <button class="filter-btn" data-category="development">Development</button>
+                <button class="filter-btn" data-category="monitoring">Monitoring</button>
+                <button class="filter-btn" data-category="design">Design</button>
+                <button class="filter-btn" data-category="productivity">Productivity</button>
+            </div>
+
+            <div class="tools-grid" id="tools-grid">
+                <!-- Tools will be loaded here dynamically -->
+            </div>
+
+            <div class="tools-loading" id="tools-loading">
+                <div class="loading-spinner"></div>
+                <p>Loading tools and resources...</p>
+            </div>
+
+            <div class="tools-empty" id="tools-empty" style="display: none;">
+                <h3>No tools found</h3>
+                <p>Check back soon for new tools and resources!</p>
+            </div>
+        </section>
+
+        <aside class="sidebar">
+            <div class="promo-box">
+                <h3 class="promo-title">Contribute</h3>
+                <p class="promo-text">Found a great tool or resource? Let me know and I might add it to this collection.</p>
+                <a href="about.html#contact" class="promo-link">Get in Touch</a>
+            </div>
+
+            <div class="sidebar-section">
+                <h3 class="sidebar-title">Tool Categories</h3>
+                <div class="category-list">
+                    <div class="category-item">
+                        <i class="fas fa-code"></i>
+                        <span>Development</span>
+                    </div>
+                    <div class="category-item">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Monitoring</span>
+                    </div>
+                    <div class="category-item">
+                        <i class="fas fa-palette"></i>
+                        <span>Design</span>
+                    </div>
+                    <div class="category-item">
+                        <i class="fas fa-rocket"></i>
+                        <span>Productivity</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <h3 class="sidebar-title">Latest Updates</h3>
+                <div class="updates-list" id="updates-list">
+                    <!-- Updates will be loaded here -->
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2025 SigAndSys - All rights reserved</p>
+    </footer>
+
+    <button id="back-to-top" class="back-to-top" aria-label="Back to top">↑</button>
+
+    <script src="script.js" defer></script>
+    <script src="tools.js" defer></script>
+</body>
+</html>
