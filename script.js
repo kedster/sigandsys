@@ -1,8 +1,8 @@
 class AdManager {
             constructor() {
                 this.adFolders = {
-                    banner: 'Ads/banner/',
-                    side: 'Ads/side/',
+                    banner: 'Ads/Banner/',
+                    side: 'Ads/Side/',
                     popup: 'Ads/popup/'
                 };
                 this.adImages = {
@@ -295,21 +295,45 @@ class AdManager {
             }
 
             formatDate(dateString) {
-                const date = new Date(dateString);
-                return date.toLocaleDateString('en-US', { 
-                    year: 'numeric', 
-                    month: 'short', 
-                    day: 'numeric' 
-                });
+                const options = { year: 'numeric', month: 'short', day: 'numeric' };
+                return new Date(dateString).toLocaleDateString(undefined, options);
             }
         }
 
-        // Global function for popup close
-        function closePopup() {
-            document.getElementById('popup-overlay').style.display = 'none';
-        }
+        document.addEventListener('DOMContentLoaded', function() {
+          // Banner Ad
+          const bannerAdContainer = document.getElementById('banner-ad-container');
+          if (bannerAdContainer) {
+            const bannerImg = document.createElement('img');
+            bannerImg.src = 'Ads/Banner/banner1.png';
+            bannerImg.alt = 'Banner Ad';
+            bannerImg.className = 'banner-ad';
+            bannerAdContainer.appendChild(bannerImg);
+          }
 
-        // Initialize the blog when the page loads
-        document.addEventListener('DOMContentLoaded', () => {
-            new BlogLoader();
+          // Side Ad
+          const sideAdContainer = document.getElementById('side-ad-container');
+          if (sideAdContainer) {
+            const sideImg = document.createElement('img');
+            sideImg.src = 'Ads/Side/side1.jpg';
+            sideImg.alt = 'Side Ad';
+            sideImg.className = 'side-ad';
+            sideAdContainer.appendChild(sideImg);
+          }
+
+          // Popup Ad (example: show after 5 seconds)
+          setTimeout(function() {
+            const popupOverlay = document.getElementById('popup-overlay');
+            const popupAdImage = document.getElementById('popup-ad-image');
+            if (popupOverlay && popupAdImage) {
+              popupAdImage.src = 'Ads/popup/1.jpg';
+              popupOverlay.style.display = 'flex';
+            }
+          }, 5000);
+
+          // Close popup function
+          window.closePopup = function() {
+            const popupOverlay = document.getElementById('popup-overlay');
+            if (popupOverlay) popupOverlay.style.display = 'none';
+          };
         });
