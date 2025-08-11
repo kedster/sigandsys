@@ -90,9 +90,18 @@ body {
 .header {
     background: var(--color-dark);
     padding: 0;
-    position: relative;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
     border-bottom: var(--border-width-thick) solid var(--color-primary);
     color: var(--color-text-light);
+    transition: transform var(--transition-speed);
+}
+
+.header.nav-hidden {
+    transform: translateY(-100%);
 }
 
 .nav-container {
@@ -299,6 +308,10 @@ body {
     .timebar .time-item {
         padding: 1px 4px;
     }
+    
+    .main-container {
+        margin-top: 130px; /* Slightly smaller header on tablets */
+    }
 }
 
 @media (max-width: 768px) {
@@ -348,6 +361,10 @@ body {
         height: 28px;
         font-size: 0.9rem;
     }
+    
+    .main-container {
+        margin-top: 120px; /* Compact header on mobile */
+    }
 }
 
 /* ==========================================================================
@@ -356,6 +373,7 @@ body {
 .main-container {
     max-width: var(--container-max-width);
     margin: 0 auto;
+    margin-top: 140px; /* Account for fixed header height (nav-top + nav-bottom + content) */
     display: grid;
     grid-template-columns: var(--left-ad-width) 1fr var(--sidebar-width);
     gap: 0;

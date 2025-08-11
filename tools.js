@@ -14,6 +14,7 @@ class ToolsManager {
         this.setupSearch();
         this.setupFilters();
         this.setupNavigation();
+        this.setupScrollNavigation();
         
         // Load tools from JSON file
         await this.loadTools();
@@ -147,6 +148,38 @@ class ToolsManager {
                 if (target) target.scrollIntoView({ behavior: 'smooth' });
             });
         });
+    }
+
+    setupScrollNavigation() {
+        const header = document.querySelector('.header');
+        if (!header) return;
+
+        let lastScrollTop = 0;
+        let ticking = false;
+        
+        const onScroll = () => {
+            if (!ticking) {
+                requestAnimationFrame(() => {
+                    const currentScrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                    
+                    // Hide header when scrolling down, show when scrolling up
+                    if (currentScrollTop > lastScrollTop && currentScrollTop > 100) {
+                        // Scrolling down and past initial 100px
+                        header.classList.add('nav-hidden');
+                    } else if (currentScrollTop < lastScrollTop) {
+                        // Scrolling up
+                        header.classList.remove('nav-hidden');
+                    }
+                    
+                    lastScrollTop = currentScrollTop;
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        };
+        
+        window.addEventListener('scroll', onScroll, { passive: true });
+        onScroll();
     }
 
     filterTools() {

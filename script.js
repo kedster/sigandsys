@@ -311,6 +311,7 @@ class BlogLoader {
         this.setupThemeToggle();
         this.setupProgressBar();
         this.setupBackToTop();
+        this.setupScrollNavigation();
 
         // Show skeletons while loading
         this.renderSkeletons();
@@ -390,6 +391,38 @@ class BlogLoader {
         };
         window.addEventListener('scroll', onScroll, { passive: true });
         btn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+        onScroll();
+    }
+
+    setupScrollNavigation() {
+        const header = document.querySelector('.header');
+        if (!header) return;
+
+        let lastScrollTop = 0;
+        let ticking = false;
+        
+        const onScroll = () => {
+            if (!ticking) {
+                requestAnimationFrame(() => {
+                    const currentScrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                    
+                    // Hide header when scrolling down, show when scrolling up
+                    if (currentScrollTop > lastScrollTop && currentScrollTop > 100) {
+                        // Scrolling down and past initial 100px
+                        header.classList.add('nav-hidden');
+                    } else if (currentScrollTop < lastScrollTop) {
+                        // Scrolling up
+                        header.classList.remove('nav-hidden');
+                    }
+                    
+                    lastScrollTop = currentScrollTop;
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        };
+        
+        window.addEventListener('scroll', onScroll, { passive: true });
         onScroll();
     }
 

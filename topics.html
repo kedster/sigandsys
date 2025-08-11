@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Topics - SigAndSys</title>
+    <meta name="description" content="Browse articles by topics and categories">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -17,11 +19,12 @@
                     <ul class="nav-menu">
                         <li><a href="index.html">Home</a></li>
                         <li><a href="archive.html">Archive</a></li>
-                        <li><a href="topics.html">Topics</a></li>
+                        <li><a href="topics.html" class="active">Topics</a></li>
+                        <li><a href="tools.html">Tools</a></li>
                         <li><a href="about.html">About</a></li>
                     </ul>
                 </div>
-                <div class="timebar">
+                <div class="timebar" aria-label="Current times">
                     <span class="time-item" id="time-ar">AR: --:--:--</span>
                     <span class="time-item" id="time-ca">CA: --:--:--</span>
                     <span class="time-item" id="time-ny">NY: --:--:--</span>
@@ -33,15 +36,15 @@
                 <div class="search-area">
                     <input type="text" class="search-input" placeholder="Search articles...">
                 </div>
-                <div class="social-links">
-                    <a href="https://linkedin.com" target="_blank" rel="noopener">LI</a>
-                    <a href="https://github.com" target="_blank" rel="noopener">GH</a>
-                    <a href="https://dev.to" target="_blank" rel="noopener">DT</a>
-                    <a href="https://daily.dev" target="_blank" rel="noopener">DD</a>
-                    <a href="https://medium.com" target="_blank" rel="noopener">MD</a>
-                    <a href="https://youtube.com" target="_blank" rel="noopener">YT</a>
+                <div class="social-links" aria-label="Social links">
+                    <a href="https://www.linkedin.com/in/seth-keddy/" target="_blank" rel="noopener" title="LinkedIn" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                    <a href="https://github.com/kedster" target="_blank" rel="noopener" title="GitHub" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                    <a href="https://dev.to/kedster" target="_blank" rel="noopener" title="Dev.to" aria-label="Dev.to"><i class="fab fa-dev"></i></a>
+                    <a href="https://app.daily.dev/sethkeddy/posts" target="_blank" rel="noopener" title="daily.dev" aria-label="daily.dev"><i class="fas fa-newspaper"></i></a>
+                    <a href="https://medium.com/@sethkeddy" target="_blank" rel="noopener" title="Medium" aria-label="Medium"><i class="fab fa-medium"></i></a>
+                    <a href="https://www.youtube.com/@KedsterLive" target="_blank" rel="noopener" title="YouTube" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
                 </div>
-                <button id="theme-toggle" class="theme-toggle btn">🌙</button>
+                <button id="theme-toggle" class="theme-toggle btn" aria-label="Toggle theme">🌙</button>
             </div>
         </nav>
     </header>
