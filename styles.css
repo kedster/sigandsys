@@ -96,7 +96,7 @@ body {
     max-width: 1400px;
     margin: 0 auto;
     display: grid;
-    grid-template-columns: 1fr 320px;
+    grid-template-columns: 320px 1fr; /* Sidebar on the left, content on the right */
     gap: 0;
     min-height: 80vh;
     padding: 2rem;
@@ -450,8 +450,8 @@ body {
 
 .popup-close {
     position: absolute;
-    top: -10px;
-    right: -10px;
+    top: 10px; /* Lower the button from the top */
+    right: 10px; /* Move it inward from the right */
     background: #ff4444;
     color: white;
     border: none;
@@ -461,6 +461,7 @@ body {
     cursor: pointer;
     font-size: 18px;
     font-weight: bold;
+    z-index: 10;
 }
 
 /* Responsive */

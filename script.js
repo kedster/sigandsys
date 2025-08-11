@@ -304,29 +304,5 @@ class AdManager {
         }
 
         document.addEventListener('DOMContentLoaded', function() {
-          // Side Ad
-          const sideAdContainer = document.getElementById('side-ad-container');
-          if (sideAdContainer) {
-            const sideImg = document.createElement('img');
-            sideImg.src = 'Ads/Side/side1.jpg';
-            sideImg.alt = 'Side Ad';
-            sideImg.className = 'side-ad';
-            sideAdContainer.appendChild(sideImg);
-          }
-
-          // Popup Ad (example: show after 5 seconds)
-          setTimeout(function() {
-            const popupOverlay = document.getElementById('popup-overlay');
-            const popupAdImage = document.getElementById('popup-ad-image');
-            if (popupOverlay && popupAdImage) {
-              popupAdImage.src = 'Ads/popup/1.jpg';
-              popupOverlay.style.display = 'flex';
-            }
-          }, 5000);
-
-          // Close popup function
-          window.closePopup = function() {
-            const popupOverlay = document.getElementById('popup-overlay');
-            if (popupOverlay) popupOverlay.style.display = 'none';
-          };
+          new BlogLoader();
         });
