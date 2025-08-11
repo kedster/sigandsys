@@ -140,8 +140,11 @@ class AdManager {
                     const promises = this.articleFiles.map(async (file) => {
                         try {
                             const response = await fetch(file);
+                            console.log('Fetching article file:', file, 'Status:', response.status);
                             if (!response.ok) throw new Error(`Failed to load ${file}`);
-                            return await response.json();
+                            const json = await response.json();
+                            console.log('Loaded article:', json);
+                            return json;
                         } catch (error) {
                             console.warn(`Could not load ${file}:`, error);
                             return null;
@@ -150,7 +153,7 @@ class AdManager {
 
                     const results = await Promise.all(promises);
                     this.articles = results.filter(article => article !== null);
-                    
+                    console.log('All loaded articles:', this.articles);
                     // Sort articles by date (newest first)
                     this.articles.sort((a, b) => new Date(b.date) - new Date(a.date));
                 } catch (error) {
@@ -236,10 +239,11 @@ class AdManager {
             renderTopics() {
                 const topicsGrid = document.getElementById('topics-grid');
                 const allTags = [...new Set(this.articles.flatMap(article => article.tags))];
-                
-                const topicsHTML = allTags.map(tag => `
-                    <a href="#" class="category-item" data-topic="${tag}">${tag}</a>
-                `).join('');
+
+                let topicsHTML = `<a href="#" class="category-item" data-topic="all">Show All</a>`;
+                allTags.forEach(tag => {
+                    topicsHTML += `<a href="#" class="category-item" data-topic="${tag}">${tag}</a>`;
+                });
 
                 topicsGrid.innerHTML = topicsHTML;
 
@@ -247,7 +251,12 @@ class AdManager {
                 document.querySelectorAll('.category-item').forEach(item => {
                     item.addEventListener('click', (e) => {
                         e.preventDefault();
-                        this.filterByTopic(e.target.dataset.topic);
+                        const topic = e.target.dataset.topic;
+                        if (topic === 'all') {
+                            this.filterArticles('');
+                        } else {
+                            this.filterByTopic(topic);
+                        }
                     });
                 });
             }
