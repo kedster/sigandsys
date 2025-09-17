@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Topics - SigAndSys</title>
+    <meta name="description" content="Browse articles by topics and categories">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav-container">
+            <!-- Top row: Logo + Main Nav + Timebar -->
+            <div class="nav-top">
+                <div class="nav-main">
+                    <a href="index.html" class="logo">SigAndSys</a>
+                    <ul class="nav-menu">
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="archive.html">Archive</a></li>
+                        <li><a href="topics.html" class="active">Topics</a></li>
+                        <li><a href="tools.html">Tools</a></li>
+                        <li><a href="about.html">About</a></li>
+                    </ul>
+                </div>
+                <div class="timebar" aria-label="Current times">
+                    <span class="time-item" id="time-ar">AR: --:--:--</span>
+                    <span class="time-item" id="time-ca">CA: --:--:--</span>
+                    <span class="time-item" id="time-ny">NY: --:--:--</span>
+                </div>
+            </div>
+            
+            <!-- Bottom row: Search + Social + Theme -->
+            <div class="nav-bottom">
+                <div class="search-area">
+                    <input type="text" class="search-input" placeholder="Search articles...">
+                </div>
+                <div class="social-links" aria-label="Social links">
+                    <a href="https://www.linkedin.com/in/seth-keddy/" target="_blank" rel="noopener" title="LinkedIn" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                    <a href="https://github.com/kedster" target="_blank" rel="noopener" title="GitHub" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                    <a href="https://dev.to/kedster" target="_blank" rel="noopener" title="Dev.to" aria-label="Dev.to"><i class="fab fa-dev"></i></a>
+                    <a href="https://app.daily.dev/sethkeddy/posts" target="_blank" rel="noopener" title="daily.dev" aria-label="daily.dev"><i class="fas fa-newspaper"></i></a>
+                    <a href="https://medium.com/@sethkeddy" target="_blank" rel="noopener" title="Medium" aria-label="Medium"><i class="fab fa-medium"></i></a>
+                    <a href="https://www.youtube.com/@KedsterLive" target="_blank" rel="noopener" title="YouTube" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                </div>
+                <button id="theme-toggle" class="theme-toggle btn" aria-label="Toggle theme">🌙</button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Progress Bar -->
+    <div id="progress-bar"></div>
+
+    <!-- Main Content -->
+    <main class="main-container">
+        <!-- Left Ad Panel -->
+        <div id="side-ad-container">
+            <!-- Side ads will be loaded here -->
+        </div>
+
+        <!-- Content Area -->
+        <div class="content">
+            <div class="content-banner">
+                <div class="banner-content">
+                    <h3>Browse Articles by Topic</h3>
+                    <p>Explore our content organized by topics and categories. Click on any topic to see related articles.</p>
+                </div>
+            </div>
+
+            <!-- Topics Grid -->
+            <div class="topics-section">
+                <h2 class="section-title">All Topics</h2>
+                <div id="topics-grid" class="topics-grid">
+                    <!-- Topics will be dynamically loaded here -->
+                </div>
+            </div>
+
+            <!-- Articles by Topic -->
+            <div class="articles-section">
+                <h2 class="section-title">Articles</h2>
+                <div id="article-list">
+                    <!-- Articles will be loaded here -->
+                </div>
+                <div id="load-more-container"></div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-section">
+                <h3 class="sidebar-title">Recent Posts</h3>
+                <ul id="recent-posts" class="recent-list">
+                    <!-- Recent posts will be loaded here -->
+                </ul>
+            </div>
+
+            <div class="sidebar-section">
+                <h3 class="sidebar-title">Popular Topics</h3>
+                <div id="popular-topics" class="category-grid">
+                    <!-- Popular topics will be loaded here -->
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <h3 class="sidebar-title">About</h3>
+                <p class="about-text">
+                    SigAndSys is your source for practical insights on systems, networking, and development. 
+                    Browse topics to find articles that match your interests.
+                </p>
+            </div>
+        </aside>
+    </main>
+
+    <!-- Popup Advertisement -->
+    <div id="popup-overlay" class="popup-overlay">
+        <div class="popup-ad">
+            <button class="popup-close" onclick="closePopup()">&times;</button>
+            <img id="popup-ad-image" src="" alt="Advertisement">
+        </div>
+    </div>
+
+    <!-- Back to Top Button -->
+    <button id="back-to-top" class="back-to-top">↑</button>
+
+    <script src="script.js"></script>
+</body>
+</html>

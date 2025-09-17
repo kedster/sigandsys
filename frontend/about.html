@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About - SigAndSys</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="header">
+    <nav class="nav-container">
+      <div class="nav-top">
+        <div class="nav-main">
+          <a href="index.html" class="logo">SigAndSys</a>
+          <ul class="nav-menu">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="archive.html">Archive</a></li>
+            <li><a href="topics.html">Topics</a></li>
+            <li><a href="tools.html">Tools</a></li>
+            <li><a href="about.html" class="active">About</a></li>
+          </ul>
+        </div>
+        <div class="timebar" aria-label="Current times">
+          <span id="time-ar" class="time-item" title="Arkansas (CT)">AR: --:--</span>
+          <span id="time-ca" class="time-item" title="California (PT)">CA: --:--</span>
+          <span id="time-ny" class="time-item" title="New York (ET)">NY: --:--</span>
+        </div>
+      </div>
+      <div class="nav-bottom">
+        <div class="search-area">
+          <input type="text" class="search-input" placeholder="Search posts..." />
+        </div>
+        <div class="social-links" aria-label="Social links">
+          <a href="https://www.linkedin.com/in/seth-keddy/" target="_blank" rel="noopener" title="LinkedIn" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+          <a href="https://github.com/kedster" target="_blank" rel="noopener" title="GitHub" aria-label="GitHub"><i class="fab fa-github"></i></a>
+          <a href="https://dev.to/kedster" target="_blank" rel="noopener" title="Dev.to" aria-label="Dev.to"><i class="fab fa-dev"></i></a>
+          <a href="https://app.daily.dev/sethkeddy/posts" target="_blank" rel="noopener" title="daily.dev" aria-label="daily.dev"><i class="fas fa-newspaper"></i></a>
+          <a href="https://medium.com/@sethkeddy" target="_blank" rel="noopener" title="Medium" aria-label="Medium"><i class="fab fa-medium"></i></a>
+          <a href="https://www.youtube.com/@KedsterLive" target="_blank" rel="noopener" title="YouTube" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+        </div>
+        <button id="theme-toggle" class="theme-toggle btn" aria-label="Toggle theme">🌙</button>
+      </div>
+    </nav>
+  </header>
+
+  <div id="progress-bar"></div>
+
+  <div id="media-banner"></div>
+
+  <main class="main-container">
+    <div id="media-left"></div>
+
+    <section class="content">
+      <h1 class="page-title">About</h1>
+      <p class="page-subtitle">Who I am and what this site is about</p>
+
+      <div class="article">
+        <p class="about-text">I'm a systems engineer who's spent too much time debugging other people's code and designing systems that actually work. This is where I document what I've learned.</p>
+      </div>
+
+      <div class="promo-box" id="newsletter">
+        <h3 class="promo-title">Newsletter</h3>
+        <p class="promo-text">Get my latest posts and deep dives delivered weekly. No fluff, just practical insights.</p>
+        <a href="#" class="banner-cta">Sign Up</a>
+      </div>
+    </section>
+
+    <aside class="sidebar">
+      <div class="sidebar-section">
+        <h3 class="sidebar-title">Recent Posts</h3>
+        <ul id="recent-posts" class="recent-list"></ul>
+      </div>
+      <div class="sidebar-section">
+        <h3 class="sidebar-title">Topics</h3>
+        <div id="topics-grid" class="category-grid"></div>
+      </div>
+    </aside>
+  </main>
+
+  <div id="overlay" class="overlay">
+    <div class="popup-content">
+      <button class="overlay-close" onclick="closePopup()">&times;</button>
+      <img id="overlay-image" class="overlay-media" src="" alt="Media">
+    </div>
+  </div>
+
+  <footer class="footer">
+    <p>&copy; 2025 SigAndSys - All rights reserved</p>
+  </footer>
+
+  <button id="back-to-top" class="back-to-top" aria-label="Back to top">↑</button>
+
+  <script src="script.js" defer></script>
+</body>
+</html>

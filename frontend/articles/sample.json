@@ -1,0 +1,10 @@
+{
+  "id": "getting-started-cybersecurity-seth",
+  "title": "Getting Started with Cybersecurity (Without the Fear-Mongering)",
+  "excerpt": "A no-BS take on cybersecurity: what it is, why it matters, and how to actually defend systems before the bad guys show up.",
+  "author": "Seth",
+  "date": "2025-08-09",
+  "tags": ["cybersecurity", "real-world", "security operations", "practical"],
+  "content": "<h2>What is Cybersecurity, Really?</h2><p>Forget the marketing scare tactics. Cybersecurity is just the practice of knowing your environment well enough to spot trouble before it takes down your systems — and having the discipline to lock the doors before someone jiggles the handle. It’s not magic, it’s just visibility, preparation, and execution.</p><h2>Core Principles I Actually Use</h2><ul><li><strong>Asset Awareness:</strong> You can’t protect what you don’t know exists. Map your endpoints, servers, apps, and data flows before you even think about ‘threat intelligence.’</li><li><strong>Least Privilege:</strong> If someone doesn’t need access, they don’t get it. This applies to users, service accounts, and the ‘temporary’ firewall rules that somehow stick around for six months.</li><li><strong>Detection and Response:</strong> Logs aren’t just for compliance — they’re your early warning system. Automate alerts, but always keep human eyes in the loop for verification.</li></ul><h2>Why I Bother with Cybersecurity</h2><p>Because I’ve cleaned up after breaches that could have been stopped with basic hygiene: patching, password rotation, proper backups. Cybersecurity keeps your systems running, your compliance boxes checked, and your team from working through the weekend trying to restore from last year’s cold storage.</p>",
+  "coverImage": "images/cybersecurity-intro.jpg"
+}

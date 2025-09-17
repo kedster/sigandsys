@@ -1,0 +1,324 @@
+[
+    {
+        "id": "dns-propagation-debugging-seth",
+        "title": "DNS Propagation Debugging (When Your Domain Changes Don't Stick)",
+        "excerpt": "A practical guide to understanding DNS propagation, debugging resolution issues, and speeding up global DNS updates without pulling your hair out.",
+        "author": "Seth Keddy",
+        "date": "2025-08-11",
+        "tags": [
+            "dns",
+            "propagation",
+            "debugging",
+            "networking",
+            "practical"
+        ],
+        "content": "<h2>What DNS Propagation Actually Is</h2><p>DNS propagation isn't some mystical process — it's just the time it takes for DNS changes to spread across the internet's recursive resolvers. When you update a record, it doesn't magically appear everywhere instantly. Caching layers, TTL values, and resolver refresh cycles all determine how fast your changes show up globally.</p><h2>Essential Propagation Tools</h2><ul><li><strong>dig and nslookup:</strong> Your command-line workhorses. Use 'dig @8.8.8.8 yourdomain.com' to query specific resolvers and see what they're actually serving.</li><li><strong>whatsmydns.net:</strong> Global propagation checker that queries resolvers worldwide. Perfect for confirming your changes are spreading correctly.</li><li><strong>DNSChecker.org:</strong> Another solid propagation tool with clean interface and multiple record type support.</li></ul><h2>Common Propagation Problems I Actually Fix</h2><p>High TTL values are usually the culprit when changes take forever. That 86400-second TTL you set months ago? It's now blocking your urgent MX record update. Also, some ISPs ignore TTL values entirely and cache aggressively — looking at you, certain residential providers. The fix is usually waiting it out or contacting the resolver operator directly.</p><h2>Speeding Up Propagation</h2><p>Lower your TTLs before making changes (do this hours or days in advance). Use authoritative nameservers with good global presence. For critical updates, flush your local DNS cache and test from multiple networks. Remember: you can't force other people's resolvers to refresh, but you can make the process smoother.</p>",
+        "coverImage": "images/dns-propagation-debugging.jpg"
+    },
+    {
+        "id": "dns-management-platforms-seth",
+        "title": "DNS Management Platforms (Beyond Your Registrar's Basic Panel)",
+        "excerpt": "A rundown of serious DNS management platforms that actually handle enterprise workloads, automation, and don't crash during peak traffic.",
+        "author": "Seth Keddy",
+        "date": "2025-08-11",
+        "tags": [
+            "dns",
+            "management",
+            "platforms",
+            "enterprise",
+            "practical"
+        ],
+        "content": "<h2>Why Your Registrar's DNS Isn't Enough</h2><p>Registrar DNS panels are fine for personal blogs, but they fall apart when you need API access, geographic routing, health checks, or sub-second TTLs. Enterprise DNS management requires platforms built for scale, automation, and reliability — not just basic A and CNAME records through a web form.</p><h2>Platforms That Actually Work</h2><ul><li><strong>Cloudflare:</strong> Solid free tier, excellent API, built-in DDoS protection. Their managed DNS handles massive traffic spikes without breaking. Global anycast network means fast resolution worldwide.</li><li><strong>Route 53 (AWS):</strong> Integrates seamlessly with AWS services, supports health checks and failover routing. Pay-per-query pricing scales with usage. Rock-solid uptime and extensive geographic routing options.</li><li><strong>NS1:</strong> Advanced traffic steering, real-time data feeds, and sophisticated filtering. Built for high-performance applications that need intelligent DNS routing based on server load or user location.</li><li><strong>Google Cloud DNS:</strong> Fast, reliable, integrates with GCP. Good API, competitive pricing. Strong performance for applications already running on Google infrastructure.</li></ul><h2>Features That Actually Matter</h2><p>API access for automation, health checks for failover, geographic routing for performance, and analytics for troubleshooting. Also look for Terraform/Infrastructure-as-Code support, DNSSEC signing, and reasonable rate limits on API calls. Uptime SLAs matter more than feature lists.</p><h2>Migration Strategy</h2><p>Lower TTLs on existing records first, then gradually move record types over. Test thoroughly in staging environments. Keep your old DNS active until propagation completes. Have rollback procedures ready because DNS changes can break everything instantly.</p>",
+        "coverImage": "images/dns-management-platforms.jpg"
+    },
+    {
+        "id": "dns-api-automation-seth",
+        "title": "DNS API Automation (Stop Clicking Through Web Panels)",
+        "excerpt": "How to automate DNS record management with APIs, infrastructure-as-code, and scripts that don't break when your certificate renewals hit.",
+        "author": "Seth Keddy",
+        "date": "2025-08-11",
+        "tags": [
+            "dns",
+            "automation",
+            "api",
+            "scripting",
+            "devops"
+        ],
+        "content": "<h2>Why Automate DNS Management</h2><p>Because manually updating DNS records at 3 AM when your SSL certificates expire is not sustainable. DNS automation prevents human error, enables rapid scaling, and makes certificate renewals actually work. Plus, infrastructure-as-code means your DNS configuration is versioned, tested, and reproducible.</p><h2>API Tools Worth Using</h2><ul><li><strong>Terraform DNS Providers:</strong> Manage DNS records alongside infrastructure. Supports major platforms (Cloudflare, Route 53, NS1). Version control your DNS zones like any other infrastructure component.</li><li><strong>cert-bot with DNS challenges:</strong> Automated Let's Encrypt certificates using DNS-01 challenges. Works with most major DNS APIs. Essential for wildcard certificates and systems behind firewalls.</li><li><strong>External-DNS (Kubernetes):</strong> Automatically creates DNS records for Kubernetes services and ingresses. Keeps DNS in sync with cluster state without manual intervention.</li><li><strong>PowerDNS API:</strong> If you run your own authoritative servers, PowerDNS has a solid REST API for programmatic record management.</li></ul><h2>Common Automation Patterns</h2><p>Blue-green deployments with automated DNS switching, dynamic service discovery with consul-template or similar, automated certificate renewal with DNS challenges, and disaster recovery with health-check-driven failover. Also useful for ephemeral environments where DNS records need to be created and destroyed frequently.</p><h2>API Rate Limits and Error Handling</h2><p>Most DNS APIs have rate limits — plan accordingly. Implement exponential backoff, handle API errors gracefully, and always validate changes after making them. Use webhooks where available for real-time updates instead of polling. Cache API responses when possible to reduce unnecessary calls.</p><h2>Security Considerations</h2><p>DNS APIs can modify critical infrastructure, so treat API keys like root passwords. Use service-specific API tokens with minimal required permissions. Rotate keys regularly, audit API usage, and never hardcode credentials in scripts. Consider using HashiCorp Vault or similar for secure credential management.</p>",
+        "coverImage": "images/dns-api-automation.jpg"
+    },
+    {
+        "id": "dns-backup-recovery-seth",
+        "title": "DNS Backup and Recovery (Before You Lose Your Zone Files)",
+        "excerpt": "How to properly backup DNS zones, automate exports, and recover from DNS disasters without losing customers or sanity.",
+        "author": "Seth Keddy",
+        "date": "2025-08-11",
+        "tags": [
+            "dns",
+            "backup",
+            "recovery",
+            "disaster recovery",
+            "practical"
+        ],
+        "content": "<h2>Why DNS Backups Matter</h2><p>Because DNS is a single point of failure that can take down your entire online presence instantly. Accidental zone deletions, provider outages, account compromises, and fat-fingered bulk updates all happen more often than anyone admits. A solid DNS backup strategy is the difference between a 5-minute fix and a multi-day outage.</p><h2>What to Backup</h2><ul><li><strong>Zone Files:</strong> Complete zone exports in standard BIND format. Include all record types, TTL values, and DNSSEC signing keys if applicable.</li><li><strong>Configuration Data:</strong> DNS provider settings, health check configurations, geographic routing rules, and access control policies.</li><li><strong>API Credentials:</strong> Securely stored credentials for emergency access and automation. Keep these separate from your main credential store.</li></ul><h2>Backup Tools and Methods</h2><p>Most major DNS providers offer zone export APIs. Write scripts that regularly export zones to version-controlled repositories. Use tools like 'dig AXFR' for zone transfers where supported, or provider-specific CLI tools like 'aws route53' or 'cloudflare-cli'. Store backups in multiple locations and test restoration procedures regularly.</p><h2>Automated Backup Scripts</h2><p>Set up daily automated exports with proper error handling and alerting. Use cron jobs or CI/CD pipelines to run backup scripts. Validate exported zone files before storage. Compare current zones against previous versions to detect unexpected changes. Alert on backup failures immediately — silent backup failures are worse than no backups.</p><h2>Recovery Procedures</h2><p>Document step-by-step recovery procedures for different scenarios: provider outages, account compromises, accidental deletions, and zone corruptions. Test recovery procedures regularly in staging environments. Know how to quickly switch to backup DNS providers if your primary goes down. Keep emergency contact information for DNS providers accessible offline.</p><h2>Multi-Provider Strategy</h2><p>Don't put all your DNS eggs in one basket. Use secondary DNS providers for critical domains. Implement automated synchronization between primary and secondary providers. This provides redundancy and options during provider-specific outages.</p>",
+        "coverImage": "images/dns-backup-recovery.jpg"
+    },
+    {
+        "id": "dns-monitoring-troubleshooting-seth",
+        "title": "DNS Monitoring and Troubleshooting (Before Your Users Notice)",
+        "excerpt": "How to monitor DNS resolution, set up meaningful alerts, and debug DNS issues faster than your customers can complain about them.",
+        "author": "Seth Keddy",
+        "date": "2025-08-11",
+        "tags": [
+            "dns",
+            "monitoring",
+            "troubleshooting",
+            "alerting",
+            "practical"
+        ],
+        "content": "<h2>What DNS Monitoring Actually Covers</h2><p>DNS monitoring isn't just uptime checks — it's resolution time, answer accuracy, propagation status, and authoritative server health. You need to know when records resolve incorrectly, when response times spike, and when nameservers stop responding before your users start getting connection timeouts.</p><h2>Essential Monitoring Tools</h2><ul><li><strong>Pingdom/UptimeRobot:</strong> Basic DNS resolution monitoring from multiple locations. Good for catching obvious outages and resolution failures.</li><li><strong>DNSPerf:</strong> Comprehensive DNS performance monitoring with global test points. Tracks resolution times, success rates, and provides detailed analytics.</li><li><strong>Nagios/Icinga DNS plugins:</strong> If you run your own monitoring, these plugins check resolution, response times, and record accuracy against expected values.</li><li><strong>Custom scripts with dig:</strong> Sometimes you need specific checks that commercial tools don't provide. Shell scripts with dig can monitor specific record types, TTL values, or complex resolution chains.</li></ul><h2>Alerting That Doesn't Cry Wolf</h2><p>Alert on resolution failures, not temporary blips. Set reasonable thresholds — 5-second DNS response times might be normal during traffic spikes. Use escalation policies: page for complete outages, email for performance degradation. Group related alerts to avoid spam during widespread issues.</p><h2>Common DNS Problems and Fixes</h2><p>Misconfigured TTL values causing slow propagation, missing glue records breaking delegation, expired DNSSEC signatures causing validation failures, and overloaded authoritative servers causing timeouts. Also watch for DNS cache poisoning, unauthorized zone transfers, and DDoS attacks against your nameservers.</p><h2>Troubleshooting Methodology</h2><p>Start with authoritative nameservers using 'dig +trace' to follow the full resolution path. Check if the problem is global or localized to specific resolvers. Verify record accuracy, TTL values, and DNSSEC signatures. Use multiple vantage points to isolate network vs. DNS issues. Document findings for post-incident analysis.</p><h2>Performance Optimization</h2><p>Monitor query patterns to optimize record placement and caching strategies. Use anycast addressing for authoritative servers. Implement geographic routing to direct users to the closest resources. Regular performance baselines help identify degradation trends before they become problems.</p>",
+        "coverImage": "images/dns-monitoring-troubleshooting.jpg"
+    },
+    
+        {
+        "id": "dnssec-implementation-seth",
+        "title": "DNSSEC Implementation (Actually Securing Your DNS)",
+        "excerpt": "A practical guide to implementing DNSSEC without breaking everything, including key management, signing processes, and validation troubleshooting.",
+        "author": "Seth",
+        "date": "2025-08-11",
+        "tags": [
+            "dns",
+            "dnssec",
+            "security",
+            "cryptography",
+            "practical"
+        ],
+        "content": "<h2>What DNSSEC Actually Does</h2><p>DNSSEC isn't encryption — it's digital signatures for DNS responses. It proves that the DNS answer you got actually came from the authoritative source and wasn't modified in transit. Think of it as a tamper-evident seal on your DNS records that prevents cache poisoning and man-in-the-middle attacks.</p><h2>Key Components That Matter</h2><ul><li><strong>Zone Signing Key (ZSK):</strong> Signs individual DNS records. Rotated regularly (monthly or quarterly). If compromised, only affects your zone until rotation.</li><li><strong>Key Signing Key (KSK):</strong> Signs the ZSK and establishes chain of trust. Rotated less frequently (annually). More critical to protect since compromise affects trust chain.</li><li><strong>DS Records:</strong> Published in parent zone to establish trust chain. Think of them as the bridge between your zone and the broader DNS hierarchy.</li></ul><h2>Implementation Strategy</h2><p>Start with non-critical domains first. Use your DNS provider's managed DNSSEC if available — key rotation and signing are handled automatically. For self-hosted, tools like BIND, PowerDNS, and Knot handle signing and key management. Test thoroughly with DNSSEC validators before going live.</p><h2>Common Implementation Pitfalls</h2><p>Forgetting to publish DS records in the parent zone breaks the entire chain of trust. Clock skew between signing and validating systems causes signature validation failures. Over-aggressive key rotation can break caching resolvers. Always monitor DNSSEC validation status after changes.</p><h2>Key Management Best Practices</h2><p>Store KSKs offline or in HSMs for high-value domains. Automate ZSK rotation but keep human oversight on KSK changes. Have emergency key rollover procedures documented and tested. Monitor key expiration dates religiously — expired keys break resolution entirely.</p><h2>Troubleshooting DNSSEC Issues</h2><p>Use tools like 'dig +dnssec' and online DNSSEC validators to verify signatures. Check signature expiration dates and key rollover timing. Verify DS records match your KSK. When DNSSEC breaks, it breaks hard — resolution fails completely for validating resolvers.</p>",
+        "coverImage": "images/dnssec-implementation.jpg"
+    },
+    {
+        "id": "dns-over-https-security-seth",
+        "title": "DNS over HTTPS and Secure DNS (Encrypting Your Queries)",
+        "excerpt": "How DoH, DoT, and other secure DNS protocols actually work, when to use them, and how to implement them without breaking existing infrastructure.",
+        "author": "Seth",
+        "date": "2025-08-11",
+        "tags": [
+            "dns",
+            "encryption",
+            "privacy",
+            "doh",
+            "dot",
+            "security"
+        ],
+        "content": "<h2>Why DNS Needs Encryption</h2><p>Traditional DNS queries are sent in plaintext, making them visible to ISPs, network operators, and anyone sniffing traffic. This creates privacy issues and enables censorship, traffic analysis, and targeted attacks. Encrypted DNS protocols solve this by wrapping queries in TLS or HTTPS.</p><h2>Secure DNS Protocols Explained</h2><ul><li><strong>DNS over TLS (DoT):</strong> Uses dedicated port 853 with TLS encryption. Simple to implement and monitor. Easily blocked by network operators since it uses a specific port.</li><li><strong>DNS over HTTPS (DoH):</strong> Tunnels DNS queries through HTTPS on port 443. Harder to block since it looks like regular web traffic. More complex to implement and debug.</li><li><strong>DNS over QUIC (DoQ):</strong> Newer protocol using QUIC transport. Faster connection establishment, better performance in high-latency networks. Limited provider support currently.</li></ul><h2>Implementation Considerations</h2><p>Choose providers carefully — you're shifting trust from your ISP to your DNS provider. Popular options include Cloudflare (1.1.1.1), Quad9, and NextDNS. For corporate environments, consider running your own encrypted DNS resolvers with software like CoreDNS or Unbound.</p><h2>Client Configuration</h2><p>Modern browsers support DoH natively but may bypass system DNS settings. Configure at the OS level for system-wide coverage. Use tools like Stubby for DoT or cloudflared for DoH. Mobile devices increasingly support encrypted DNS in network settings.</p><h2>Enterprise Deployment Challenges</h2><p>Encrypted DNS can break content filtering and monitoring solutions that rely on DNS inspection. Plan workarounds for security tools that need visibility into DNS queries. Consider using internal DoH/DoT servers that forward to external encrypted resolvers.</p><h2>Performance and Reliability</h2><p>Encrypted DNS adds latency due to TLS handshakes. Use connection pooling and session resumption to minimize overhead. Have fallback mechanisms for when encrypted DNS fails. Monitor resolution times and success rates after deployment.</p>",
+        "coverImage": "images/dns-over-https-security.jpg"
+    },
+    {
+        "id": "dns-attack-prevention-seth",
+        "title": "DNS Attack Prevention (Stopping the Bad Guys at Resolution)",
+        "excerpt": "How to defend against DNS poisoning, DDoS attacks, subdomain takeovers, and other DNS-based threats before they compromise your infrastructure.",
+        "author": "Seth",
+        "date": "2025-08-11",
+        "tags": [
+            "dns",
+            "security",
+            "attacks",
+            "prevention",
+            "defense"
+        ],
+        "content": "<h2>Common DNS Attacks That Actually Happen</h2><p>DNS cache poisoning redirects legitimate traffic to malicious servers. DNS DDoS overwhelms authoritative servers or specific record queries. Subdomain takeovers exploit dangling DNS records pointing to decommissioned services. DNS tunneling exfiltrates data through encoded DNS queries. These aren't theoretical — I've responded to all of them.</p><h2>Cache Poisoning Defense</h2><ul><li><strong>Use DNSSEC:</strong> Digital signatures prevent forged responses from being accepted by validating resolvers. Deploy it properly or don't bother.</li><li><strong>Randomize Query IDs:</strong> Modern resolvers do this automatically, but verify your recursive servers aren't predictable. Use tools like DNSRecon to test.</li><li><strong>Source Port Randomization:</strong> Queries should use random source ports to prevent response prediction attacks. Most modern software handles this correctly.</li></ul><h2>DDoS Mitigation Strategies</h2><p>Use anycast addressing to distribute attack traffic across multiple servers. Implement rate limiting on recursive resolvers to prevent amplification attacks. Choose DNS providers with robust DDoS protection — your $5/month hosting provider won't survive a determined attacker. Monitor query patterns for abnormal spikes.</p><h2>Subdomain Takeover Prevention</h2><p>Regularly audit DNS records for services you no longer control. Remove CNAME records pointing to decommissioned AWS instances, GitHub pages, or cloud services. Use automation to detect dangling DNS records before attackers find them. Tools like can-i-take-over-xyz help identify vulnerable configurations.</p><h2>DNS Tunneling Detection</h2><p>Monitor for unusual query patterns: excessive TXT record queries, long subdomain names, high query volume from single sources. Implement DNS firewalls that can detect and block tunneling attempts. Analyze DNS logs for anomalous behavior patterns.</p><h2>Authoritative Server Hardening</h2><p>Disable unnecessary features like zone transfers to unauthorized servers. Use access control lists to restrict who can query specific record types. Keep DNS software updated — vulnerabilities in BIND, PowerDNS, and other servers get patched regularly. Monitor for unauthorized zone changes.</p><h2>Monitoring and Alerting</h2><p>Set up alerts for unexpected DNS changes, query volume spikes, and resolution failures. Use multiple monitoring locations to detect localized attacks. Implement automated responses for common attack patterns, but keep humans in the loop for complex incidents.</p>",
+        "coverImage": "images/dns-attack-prevention.jpg"
+    },
+    {
+        "id": "dns-filtering-security-seth",
+        "title": "DNS Security Filtering (Blocking Bad Domains at Resolution)",
+        "excerpt": "How to implement DNS-based security filtering to block malware domains, phishing sites, and other threats before they reach your users.",
+        "author": "Seth",
+        "date": "2025-08-11",
+        "tags": [
+            "dns",
+            "filtering",
+            "security",
+            "malware",
+            "protection"
+        ],
+        "content": "<h2>Why Filter at the DNS Level</h2><p>DNS filtering catches threats before they establish connections. It's faster than web filtering, works across all applications, and provides visibility into attempted connections to known bad domains. Plus, it's nearly impossible for malware to bypass DNS resolution entirely — they need domain names to function.</p><h2>Types of DNS Security Filtering</h2><ul><li><strong>Malware Domain Blocking:</strong> Prevents connections to known command-and-control servers, malware distribution sites, and compromised domains. Updates in near real-time as new threats emerge.</li><li><strong>Phishing Protection:</strong> Blocks newly registered domains, typosquatting attempts, and confirmed phishing sites. Particularly effective against email-based attacks.</li><li><strong>Category-Based Filtering:</strong> Blocks entire categories like gambling, adult content, or social media. Useful for compliance and productivity policies.</li></ul><h2>Enterprise DNS Filtering Solutions</h2><p>Cisco Umbrella provides comprehensive threat intelligence and easy deployment. Infoblox BloxOne offers integration with existing DDI infrastructure. DNSFilter focuses on malware and phishing with good API integration. For self-hosted solutions, Pi-hole with threat intelligence feeds works for smaller environments.</p><h2>Implementation Strategies</h2><p>Deploy filtering at recursive resolvers to cover all internal users. Use conditional forwarding to maintain internal DNS resolution while filtering external queries. Implement bypass mechanisms for legitimate business needs — some security tools need access to flagged domains for analysis.</p><h2>Threat Intelligence Integration</h2><p>Quality of threat feeds matters more than quantity. Use reputable sources like Spamhaus, SURBL, and commercial threat intelligence providers. Update feeds frequently but validate before blocking — false positives can break business operations instantly. Maintain local allow lists for legitimate domains that get flagged.</p><h2>Monitoring and Analytics</h2><p>Track blocked queries by category and source to identify infection patterns. Monitor for DNS tunneling attempts through allowed domains. Generate reports on threat exposure and filtering effectiveness. Use analytics to tune filtering policies and reduce false positives.</p><h2>Bypass and Override Mechanisms</h2><p>Provide secure methods for users to request domain unblocking. Implement time-limited bypasses for temporary access needs. Log all override requests for security analysis. Train help desk staff on legitimate vs. suspicious bypass requests.</p>",
+        "coverImage": "images/dns-filtering-security.jpg"
+    },
+    {
+        "id": "dns-logging-forensics-seth",
+        "title": "DNS Logging and Forensics (Finding the Smoking Gun in Query Logs)",
+        "excerpt": "How to properly log DNS queries, analyze patterns for security incidents, and conduct forensic analysis when your network gets compromised.",
+        "author": "Seth",
+        "date": "2025-08-11",
+        "tags": [
+            "dns",
+            "logging",
+            "forensics",
+            "incident response",
+            "security"
+        ],
+        "content": "<h2>What to Log and Why</h2><p>DNS logs are goldmines during incident response. They show where compromised systems tried to connect, reveal command-and-control infrastructure, and provide timeline evidence for breach investigations. But logging everything creates storage and privacy challenges — focus on security-relevant data.</p><h2>Essential DNS Log Fields</h2><ul><li><strong>Query Details:</strong> Timestamp, source IP, queried domain, record type, and response code. This basic data answers most forensic questions.</li><li><strong>Response Information:</strong> Returned IP addresses, TTL values, and authoritative server responses. Critical for tracking malicious infrastructure changes.</li><li><strong>Client Context:</strong> User identification where possible, device information, and network location. Helps correlate DNS activity with specific incidents.</li></ul><h2>Log Collection and Storage</h2><p>Configure recursive resolvers to log queries to centralized systems. Use syslog, file outputs, or dedicated logging APIs depending on your DNS software. For high-volume environments, implement sampling or filtering to manage storage costs while retaining security-relevant data.</p><h2>Privacy and Compliance Considerations</h2><p>DNS logs contain sensitive user activity data. Implement retention policies that balance security needs with privacy requirements. Anonymize or pseudonymize logs where possible. Ensure compliance with GDPR, HIPAA, or other applicable regulations.</p><h2>Forensic Analysis Techniques</h2><p>Look for unusual query patterns: new domains queried by multiple hosts, high-frequency queries to the same domain, or queries for domain generation algorithm (DGA) patterns. Use tools like passivedns for historical analysis and domain correlation. Timeline analysis helps establish attack progression.</p><h2>Automated Threat Detection</h2><p>Implement alerting for queries to known malicious domains, unusual query patterns, and DNS tunneling indicators. Use machine learning approaches to detect DGA domains and suspicious query behavior. Correlate DNS logs with other security data sources for comprehensive threat hunting.</p><h2>Tools for DNS Log Analysis</h2><p>ELK Stack (Elasticsearch, Logstash, Kibana) provides powerful search and visualization capabilities. Splunk offers comprehensive log analysis with DNS-specific apps. For smaller environments, tools like dnstop and dnshistory provide basic analysis capabilities. Custom scripts with Python or PowerShell handle specific forensic requirements.</p><h2>Case Study Examples</h2><p>DNS logs revealed botnet infections through repetitive queries to algorithmically generated domains. Exfiltration attempts showed up as unusually long TXT record queries. Lateral movement appeared as internal systems suddenly querying external domains they never accessed before. The patterns are there if you know how to look.</p>",
+        "coverImage": "images/dns-logging-forensics.jpg"
+    },
+    {
+        "id": "ai-email-sentiment-analysis-overview-seth",
+        "title": "AI-Powered Email Sentiment Analysis (From Basics to Production)",
+        "excerpt": "What AI email sentiment analysis is, how it works, the models behind it, and real-world deployment considerations.",
+        "author": "Seth",
+        "date": "2025-08-11",
+        "tags": [
+            "ai",
+            "email",
+            "sentiment",
+            "nlp",
+            "machine-learning"
+        ],
+        "content": "<h2>Why Sentiment Analysis Matters for Email</h2><p>Sentiment analysis l  ets companies gauge tone and emotion in written communication, enabling faster triage, personalized responses, and early detection of dissatisfaction. In customer support, it can flag urgent messages before human review.</p><h2>Core Techniques</h2><ul><li><strong>Lexicon-based:</strong> Uses predefined word lists with sentiment scores. Fast but rigid, struggles with sarcasm and context.</li><li><strong>Machine learning:</strong> Logistic regression, SVMs, and Naive Bayes trained on labeled datasets. More flexible but needs feature engineering.</li><li><strong>Deep learning:</strong> Transformers like BERT, RoBERTa, and GPT models fine-tuned for email sentiment detection. Handles context better and adapts to domain-specific tone.</li></ul><h2>Challenges with Emails</h2><p>Email text is often noisy: signatures, disclaimers, quoted threads, and mixed topics. Preprocessing steps like signature stripping, quote removal, and sentence-level segmentation are critical.</p><h2>Integration Considerations</h2><p>Deploy sentiment models as REST APIs for email platforms or integrate them into CRM systems. Use batch processing for historical analysis and real-time inference for live monitoring.</p><h2>Ethics and Privacy</h2><p>Never store sensitive content unnecessarily. Implement anonymization, encryption in transit and at rest, and comply with regulations like GDPR and HIPAA where applicable.</p>",
+        "coverImage": "images/ai-email-sentiment-overview.jpg"
+    },
+    {
+        "id": "chatgpt-customer-support-email-seth",
+        "title": "Using ChatGPT for Customer Support Email Triage",
+        "excerpt": "How ChatGPT can automatically categorize, summarize, and prioritize incoming emails in customer service workflows.",
+        "author": "Seth",
+        "date": "2025-08-11",
+        "tags": [
+            "chatgpt",
+            "email",
+            "customer-support",
+            "automation",
+            "ai"
+        ],
+        "content": "<h2>The Triage Problem</h2><p>Support teams are overwhelmed by incoming emails. Manual triage wastes time and causes delays in high-priority responses.</p><h2>How ChatGPT Helps</h2><ul><li><strong>Summarization:</strong> Extracts the key points of each email.</li><li><strong>Categorization:</strong> Assigns tags like 'billing', 'technical issue', or 'feature request'.</li><li><strong>Priority scoring:</strong> Uses sentiment and keyword matching to flag urgent cases.</li></ul><h2>Architecture</h2><p>Emails are piped into a preprocessing layer, stripped of HTML, and fed to ChatGPT via API. Outputs are posted to ticketing systems like Zendesk or Jira Service Management.</p><h2>Human-in-the-Loop</h2><p>Maintain a feedback loop where human agents can override AI decisions. Use these overrides to fine-tune model prompts and improve accuracy.</p>",
+        "coverImage": "images/chatgpt-email-triage.jpg"
+    },
+    {
+        "id": "multi-language-sentiment-email-seth",
+        "title": "Multi-Language Email Sentiment Analysis with AI",
+        "excerpt": "Techniques for detecting sentiment in emails across multiple languages using transformers and translation pipelines.",
+        "author": "Seth",
+        "date": "2025-08-11",
+        "tags": [
+            "ai",
+            "email",
+            "nlp",
+            "multi-language",
+            "sentiment-analysis"
+        ],
+        "content": "<h2>Global Communication Challenges</h2><p>Companies operating worldwide receive emails in dozens of languages. A one-size-fits-all English model won’t cut it.</p><h2>Approaches</h2><ul><li><strong>Multilingual Models:</strong> Use mBERT, XLM-RoBERTa, or LLaMA 2 multilingual variants to directly handle multiple languages.</li><li><strong>Translation Pipelines:</strong> Translate incoming emails into a single target language before running sentiment detection. Adds latency but simplifies downstream models.</li></ul><h2>Accuracy Considerations</h2><p>Idioms and cultural tone can alter sentiment detection accuracy. Always test on domain-specific multilingual datasets.</p><h2>Deployment</h2><p>For large-scale processing, use message queues (Kafka, RabbitMQ) and batch translation APIs, followed by parallel sentiment inference.</p>",
+        "coverImage": "images/multi-language-email-sentiment.jpg"
+    },
+    {
+        "id": "real-time-email-sentiment-alerts-seth",
+        "title": "Real-Time Sentiment Alerts for Email Using AI",
+        "excerpt": "How to set up an AI pipeline that flags high-risk or high-opportunity emails as soon as they arrive.",
+        "author": "Seth",
+        "date": "2025-08-11",
+        "tags": [
+            "ai",
+            "email",
+            "alerts",
+            "sentiment",
+            "realtime"
+        ],
+        "content": "<h2>Why Real-Time Matters</h2><p>Responding to angry customers within minutes can prevent churn. Detecting positive sentiment quickly can enable upselling opportunities.</p><h2>Pipeline Architecture</h2><ul><li>Ingestion via IMAP or email API.</li><li>Text extraction and cleaning.</li><li>Sentiment model inference (transformer-based).</li><li>Alert dispatch via Slack, Teams, or SMS.</li></ul><h2>Performance Tips</h2><p>Cache model weights in memory, use GPU acceleration, and prewarm instances for minimal latency.</p><h2>Metrics</h2><p>Track false positives/negatives, alert response times, and conversion rates post-alert.</p>",
+        "coverImage": "images/realtime-email-sentiment.jpg"
+    },
+    {
+        "id": "email-sentiment-training-dataset-seth",
+        "title": "Building a High-Quality Email Sentiment Dataset",
+        "excerpt": "How to collect, label, and maintain a dataset that actually works for email sentiment detection.",
+        "author": "Seth",
+        "date": "2025-08-11",
+        "tags": [
+            "ai",
+            "email",
+            "dataset",
+            "sentiment",
+            "nlp"
+        ],
+        "content": "<h2>Why Email is Special</h2><p>Unlike tweets or reviews, emails have longer contexts, multiple sections, and often mixed sentiment.</p><h2>Data Collection</h2><p>Gather emails from CRM exports, support inboxes, and anonymized internal communications.</p><h2>Labeling Process</h2><ul><li>Use three classes: Positive, Neutral, Negative. Add 'Mixed' if applicable.</li><li>Have multiple annotators per sample to ensure agreement.</li></ul><h2>Privacy</h2><p>Scrub PII, anonymize names, and remove sensitive data before labeling.</p>",
+        "coverImage": "images/email-sentiment-dataset.jpg"
+    },
+    {
+        "id": "chatgpt-personalized-email-replies-seth",
+        "title": "Generating Personalized Email Replies with ChatGPT",
+        "excerpt": "How to fine-tune ChatGPT prompts to generate accurate, tone-matched, and compliant email responses.",
+        "author": "Seth",
+        "date": "2025-08-11",
+        "tags": [
+            "chatgpt",
+            "email",
+            "automation",
+            "personalization",
+            "ai"
+        ],
+        "content": "<h2>Prompt Engineering Basics</h2><p>Set role, tone, and style explicitly in the prompt. Include relevant customer history and avoid hallucination by constraining the response scope.</p><h2>Maintaining Brand Voice</h2><p>Provide sample responses to the model for imitation. Reinforce tone consistency via embeddings or style tokens.</p><h2>Compliance</h2><p>For regulated industries, insert disclaimers and enforce content rules in the post-processing layer.</p>",
+        "coverImage": "images/chatgpt-personalized-replies.jpg"
+    },
+    {
+        "id": "ai-email-thread-summarization-seth",
+        "title": "Summarizing Long Email Threads with AI",
+        "excerpt": "Using transformer models to condense lengthy email chains into actionable summaries.",
+        "author": "Seth",
+        "date": "2025-08-11",
+        "tags": [
+            "ai",
+            "email",
+            "summarization",
+            "nlp",
+            "productivity"
+        ],
+        "content": "<h2>The Problem with Long Threads</h2><p>Long email chains waste time and bury key details.</p><h2>Summarization Methods</h2><ul><li><strong>Extractive:</strong> Picks important sentences verbatim.</li><li><strong>Abstractive:</strong> Generates condensed paraphrased summaries.</li></ul><h2>Implementation</h2><p>Use models like BART, Pegasus, or GPT-4 with fine-tuned prompts. Ensure removal of redundant quoted text before processing.</p>",
+        "coverImage": "images/ai-email-thread-summarization.jpg"
+    },
+    {
+        "id": "sentiment-analysis-for-sales-emails-seth",
+        "title": "Optimizing Sales Emails with AI Sentiment Feedback",
+        "excerpt": "Using sentiment detection to rewrite and improve outbound sales emails for better response rates.",
+        "author": "Seth",
+        "date": "2025-08-11",
+        "tags": [
+            "ai",
+            "email",
+            "sales",
+            "sentiment",
+            "conversion"
+        ],
+        "content": "<h2>Why Sentiment Affects Sales</h2><p>Overly formal or overly casual tones can hurt engagement. Sentiment scoring helps find the right balance.</p><h2>Workflow</h2><p>Analyze drafts before sending, highlight overly negative or flat sections, and suggest alternatives using generative AI.</p><h2>Results</h2><p>Teams report 15-30% improvement in open and reply rates when using sentiment-tuned messaging.</p>",
+        "coverImage": "images/sales-email-sentiment.jpg"
+    },
+    {
+        "id": "ai-email-sentiment-dashboard-seth",
+        "title": "Building an Email Sentiment Analysis Dashboard",
+        "excerpt": "How to visualize sentiment trends in email communication over time.",
+        "author": "Seth",
+        "date": "2025-08-11",
+        "tags": [
+            "ai",
+            "email",
+            "dashboard",
+            "sentiment",
+            "analytics"
+        ],
+        "content": "<h2>Data Pipeline</h2><p>Stream incoming emails into a sentiment analysis service, store results in a database, and expose them to BI tools.</p><h2>Visualization</h2><p>Use PowerBI, Tableau, or Grafana to plot sentiment scores, category trends, and response times.</p><h2>Actionable Insights</h2><p>Spot seasonal dips, campaign impacts, and high-value opportunities from aggregated sentiment data.</p>",
+        "coverImage": "images/email-sentiment-dashboard.jpg"
+    },
+    {
+        "id": "future-of-ai-email-sentiment-seth",
+        "title": "The Future of AI in Email Sentiment and Communication",
+        "excerpt": "Emerging trends in AI-powered communication analysis, from emotional nuance detection to proactive response generation.",
+        "author": "Seth",
+        "date": "2025-08-11",
+        "tags": [
+            "ai",
+            "email",
+            "sentiment",
+            "future",
+            "chatgpt"
+        ],
+        "content": "<h2>Beyond Positive/Negative</h2><p>Future systems will detect complex emotional states like frustration masked by politeness, urgency without explicit wording, and intent prediction.</p><h2>Integration with ChatGPT</h2><p>ChatGPT-like models will be able to adapt tone mid-conversation and auto-generate responses that match the user's preferred style.</p><h2>Risks</h2><p>Overreliance on automation may erode human empathy in communication. Balanced deployment is key.</p>",
+        "coverImage": "images/future-ai-email-sentiment.jpg"
+    }
+]

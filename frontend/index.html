@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SigAndSys</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <header class="header">
+        <nav class="nav-container">
+            <div class="nav-top">
+                <div class="nav-main">
+                    <a href="index.html" class="logo">SigAndSys</a>
+                    <ul class="nav-menu">
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="archive.html">Archive</a></li>
+                        <li><a href="topics.html">Topics</a></li>
+                        <li><a href="tools.html">Tools</a></li>
+                        <li><a href="about.html">About</a></li>
+                    </ul>
+                </div>
+                <div class="timebar" aria-label="Current times">
+                    <span id="time-ar" class="time-item" title="Arkansas (CT)">AR: --:--</span>
+                    <span id="time-ca" class="time-item" title="California (PT)">CA: --:--</span>
+                    <span id="time-ny" class="time-item" title="New York (ET)">NY: --:--</span>
+                </div>
+            </div>
+            <div class="nav-bottom">
+                <div class="search-area">
+                    <input type="text" class="search-input" placeholder="Search posts...">
+                </div>
+                <div class="social-links" aria-label="Social links">
+                    <a href="https://www.linkedin.com/in/seth-keddy/" target="_blank" rel="noopener" title="LinkedIn" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                    <a href="https://github.com/kedster" target="_blank" rel="noopener" title="GitHub" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                    <a href="https://dev.to/kedster" target="_blank" rel="noopener" title="Dev.to" aria-label="Dev.to"><i class="fab fa-dev"></i></a>
+                    <a href="https://app.daily.dev/sethkeddy/posts" target="_blank" rel="noopener" title="daily.dev" aria-label="daily.dev"><i class="fas fa-newspaper"></i></a>
+                    <a href="https://medium.com/@sethkeddy" target="_blank" rel="noopener" title="Medium" aria-label="Medium"><i class="fab fa-medium"></i></a>
+                    <a href="https://www.youtube.com/@KedsterLive" target="_blank" rel="noopener" title="YouTube" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                </div>
+                <button id="theme-toggle" class="theme-toggle btn" aria-label="Toggle theme">🌙</button>
+            </div>
+        </nav>
+    </header>
+
+    <div id="progress-bar"></div>
+
+    <div id="media-banner"></div>
+
+    <main class="main-container">
+        <div id="media-left"></div>
+
+        <section class="content">
+            <div class="website-intro">
+                <h2 class="intro-title">Welcome to SigAndSys</h2>
+                <p class="intro-text">
+                    I'm a systems engineer passionate about building robust, scalable systems and sharing the knowledge I've gained along the way. This platform serves as both my digital garden and a resource hub for fellow engineers.
+                </p>
+                <div class="intro-actions">
+                    <a href="tools.html" class="btn btn-primary">Explore Tools & Resources</a>
+                    <a href="archive.html" class="btn btn-secondary">Browse Articles</a>
+                    <a href="topics.html" class="btn btn-secondary">View Topics</a>
+                </div>
+            </div>
+
+            <h1 class="page-title">Latest Posts</h1>
+            <p class="page-subtitle">Thoughts on systems, signals, and everything in between</p>
+
+            <div class="article-list" id="article-list">
+                <div class="loading" style="display:none;">Loading articles...</div>
+                <div class="no-articles" style="display:none;">No articles available.</div>
+            </div>
+            <div id="load-more-container"></div>
+        </section>
+
+        <aside class="sidebar">
+            <div class="promo-box">
+                <h3 class="promo-title">Newsletter</h3>
+                <p class="promo-text">Get my latest posts and deep dives delivered weekly. No fluff, just practical insights.</p>
+                <a href="about.html#newsletter" class="promo-link">Subscribe</a>
+            </div>
+
+            <div class="sidebar-section">
+                <h3 class="sidebar-title">Recent Posts</h3>
+                <ul class="recent-list" id="recent-posts"></ul>
+            </div>
+
+            <div class="promo-box">
+                <h3 class="promo-title">Case Studies</h3>
+                <p class="promo-text">Real-world examples of system design decisions and their consequences.</p>
+                <a href="archive.html" class="promo-link">Explore</a>
+            </div>
+
+            <div class="sidebar-section">
+                <h3 class="sidebar-title">Topics</h3>
+                <div class="category-grid" id="topics-grid"></div>
+            </div>
+
+            <div class="sidebar-section">
+                <h3 class="sidebar-title">About</h3>
+                <p class="about-text">
+                    I'm a systems engineer who's spent too much time debugging other people's code and designing systems that actually work. This is where I document what I've learned.
+                </p>
+            </div>
+        </aside>
+    </main>
+
+    <div id="overlay" class="overlay">
+        <div class="popup-content">
+            <button class="overlay-close" onclick="closePopup()">&times;</button>
+            <img id="overlay-image" class="overlay-media" src="" alt="Media">
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2025 SigAndSys - All rights reserved</p>
+    </footer>
+
+    <button id="back-to-top" class="back-to-top" aria-label="Back to top">↑</button>
+
+    <script src="script.js" defer></script>
+</body>
+</html>

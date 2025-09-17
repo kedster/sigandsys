@@ -1,0 +1,25 @@
+name = "sigandsys-api"
+main = "src/index.js"
+compatibility_date = "2024-01-01"
+
+[env.production]
+name = "sigandsys-api"
+
+[env.staging]
+name = "sigandsys-api-staging"
+
+# Variables for the Workers environment
+[vars]
+ENVIRONMENT = "development"
+
+# Example KV namespace (uncomment when needed)
+# [[kv_namespaces]]
+# binding = "SIGANDSYS_KV"
+# id = "your-kv-namespace-id"
+# preview_id = "your-preview-kv-namespace-id"
+
+# Example D1 database (uncomment when needed)
+# [[d1_databases]]
+# binding = "DB"
+# database_name = "sigandsys-db"
+# database_id = "your-database-id"
