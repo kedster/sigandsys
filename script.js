@@ -872,3 +872,157 @@ function startTimebar() {
     update();
     setInterval(update, 1000);
 }
+
+// ==========================================================================
+// Newsletter Modal Functions
+// ==========================================================================
+
+/**
+ * Open newsletter subscription modal
+ */
+function openNewsletterModal() {
+    const modal = document.getElementById('newsletter-modal');
+    if (modal) {
+        modal.style.display = 'flex';
+        // Focus on email input for better UX
+        setTimeout(() => {
+            const emailInput = document.getElementById('newsletter-email');
+            if (emailInput) emailInput.focus();
+        }, 100);
+    }
+}
+
+/**
+ * Close newsletter subscription modal
+ */
+function closeNewsletterModal() {
+    const modal = document.getElementById('newsletter-modal');
+    if (modal) {
+        modal.style.display = 'none';
+        // Reset form
+        resetNewsletterForm();
+    }
+}
+
+/**
+ * Reset newsletter form to initial state
+ */
+function resetNewsletterForm() {
+    const form = document.getElementById('newsletter-form');
+    const message = document.getElementById('newsletter-message');
+    const submitBtn = document.getElementById('newsletter-submit-btn');
+    
+    if (form) form.reset();
+    if (message) {
+        message.style.display = 'none';
+        message.className = 'newsletter-message';
+    }
+    if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Subscribe';
+    }
+}
+
+/**
+ * Handle newsletter form submission
+ */
+async function handleNewsletterSubmit(event) {
+    event.preventDefault();
+    
+    const form = event.target;
+    const email = document.getElementById('newsletter-email').value.trim();
+    const message = document.getElementById('newsletter-message');
+    const submitBtn = document.getElementById('newsletter-submit-btn');
+    
+    if (!email || !isValidEmail(email)) {
+        showNewsletterMessage('Please enter a valid email address.', 'error');
+        return;
+    }
+    
+    // Update UI to show loading state
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Subscribing...';
+    message.style.display = 'none';
+    
+    try {
+        // Get API base URL - try to detect if we're on local dev or production
+        const apiBaseUrl = getApiBaseUrl();
+        
+        const response = await fetch(`${apiBaseUrl}/newsletter/subscribe`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            showNewsletterMessage('Successfully subscribed! Welcome to the SigAndSys newsletter.', 'success');
+            form.reset();
+            // Close modal after a short delay
+            setTimeout(() => {
+                closeNewsletterModal();
+            }, 2000);
+        } else {
+            showNewsletterMessage(data.message || 'Subscription failed. Please try again.', 'error');
+        }
+    } catch (error) {
+        console.error('Newsletter subscription error:', error);
+        showNewsletterMessage('Network error. Please check your connection and try again.', 'error');
+    } finally {
+        // Reset button state
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Subscribe';
+    }
+}
+
+/**
+ * Show newsletter message (success or error)
+ */
+function showNewsletterMessage(text, type) {
+    const message = document.getElementById('newsletter-message');
+    if (message) {
+        message.textContent = text;
+        message.className = `newsletter-message ${type}`;
+        message.style.display = 'block';
+    }
+}
+
+/**
+ * Validate email address format
+ */
+function isValidEmail(email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+}
+
+/**
+ * Get API base URL based on current environment
+ */
+function getApiBaseUrl() {
+    // Check if we're on localhost for development
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        return 'http://localhost:8787'; // Local Cloudflare Worker dev server
+    }
+    
+    // Production API URL - Update this with your deployed Cloudflare Worker URL
+    // Format: https://worker-name.your-subdomain.workers.dev
+    return 'https://sigandsys-api.kedster.workers.dev'; // TODO: Update with actual deployed worker URL
+}
+
+// Close modal when clicking outside of it
+document.addEventListener('click', function(event) {
+    const modal = document.getElementById('newsletter-modal');
+    if (modal && event.target === modal) {
+        closeNewsletterModal();
+    }
+});
+
+// Close modal when pressing Escape key
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+        closeNewsletterModal();
+    }
+});

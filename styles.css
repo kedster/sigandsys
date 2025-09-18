@@ -968,6 +968,177 @@ body {
     z-index: 10;
 }
 
+/* ==========================================================================
+   Newsletter Modal
+   ========================================================================== */
+.newsletter-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: var(--z-index-popup);
+    backdrop-filter: blur(4px);
+}
+
+.newsletter-modal-content {
+    background: var(--color-surface);
+    padding: var(--spacing-2xl);
+    border-radius: var(--border-radius-lg);
+    max-width: 480px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: var(--shadow-elev-hover);
+    border: var(--border-width) solid var(--color-border);
+    position: relative;
+    text-align: center;
+}
+
+.newsletter-modal-close {
+    position: absolute;
+    top: var(--spacing-md);
+    right: var(--spacing-md);
+    background: var(--color-error);
+    color: var(--color-text-light);
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    font-size: 20px;
+    font-weight: var(--font-weight-bold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    transition: background var(--transition-speed);
+}
+
+.newsletter-modal-close:hover {
+    background: #cc3333;
+    transform: scale(1.1);
+}
+
+.newsletter-modal h3 {
+    color: var(--color-text);
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    margin: 0 0 var(--spacing-md) 0;
+    line-height: var(--line-height-tight);
+}
+
+.newsletter-modal p {
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-base);
+    margin: 0 0 var(--spacing-xl) 0;
+}
+
+.newsletter-form-group {
+    margin-bottom: var(--spacing-lg);
+    text-align: left;
+}
+
+#newsletter-email {
+    width: 100%;
+    padding: var(--spacing-md) var(--spacing-base);
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--border-radius-base);
+    font-size: var(--font-size-base);
+    font-family: var(--font-family-primary);
+    background: var(--color-background);
+    color: var(--color-text);
+    transition: border-color var(--transition-speed);
+    box-sizing: border-box;
+}
+
+#newsletter-email:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+}
+
+#newsletter-email::placeholder {
+    color: var(--color-gray-lighter);
+}
+
+.newsletter-submit {
+    background: var(--color-primary);
+    color: var(--color-text-light);
+    border: none;
+    padding: var(--spacing-md) var(--spacing-2xl);
+    border-radius: var(--border-radius-base);
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    cursor: pointer;
+    transition: all var(--transition-speed);
+    width: 100%;
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.newsletter-submit:hover:not(:disabled) {
+    background: var(--color-primary-hover);
+    transform: translateY(-1px);
+}
+
+.newsletter-submit:disabled {
+    background: var(--color-gray-light);
+    cursor: not-allowed;
+    transform: none;
+}
+
+.newsletter-message {
+    margin: var(--spacing-lg) 0;
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius-base);
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    text-align: center;
+}
+
+.newsletter-message.success {
+    background: rgba(40, 167, 69, 0.1);
+    color: var(--color-success);
+    border: var(--border-width) solid var(--color-success);
+}
+
+.newsletter-message.error {
+    background: rgba(255, 68, 68, 0.1);
+    color: var(--color-error);
+    border: var(--border-width) solid var(--color-error);
+}
+
+.newsletter-privacy {
+    font-size: var(--font-size-small);
+    color: var(--color-gray-light);
+    margin: var(--spacing-lg) 0 0 0;
+    line-height: var(--line-height-base);
+}
+
+/* Responsive design for newsletter modal */
+@media (max-width: 768px) {
+    .newsletter-modal-content {
+        padding: var(--spacing-xl);
+        width: 95%;
+    }
+    
+    .newsletter-modal h3 {
+        font-size: var(--font-size-large);
+    }
+    
+    #newsletter-email {
+        font-size: 16px; /* Prevents zoom on iOS */
+    }
+}
+
 /* Support both old and new left container ids in grid placement */
 #media-left,
 #side-ad-container {

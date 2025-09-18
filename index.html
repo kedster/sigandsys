@@ -122,7 +122,7 @@
             <div class="promo-box">
                 <h3 class="promo-title">Newsletter</h3>
                 <p class="promo-text">Get my latest posts and deep dives delivered weekly. No fluff, just practical insights.</p>
-                <a href="about.html#newsletter" class="promo-link">Subscribe</a>
+                <button class="promo-link" onclick="openNewsletterModal()">Subscribe</button>
             </div>
 
             <div class="sidebar-section">
@@ -160,6 +160,36 @@
     <footer class="footer">
         <p>&copy; 2025 SigAndSys - All rights reserved</p>
     </footer>
+
+    <!-- Newsletter Modal -->
+    <div id="newsletter-modal" class="newsletter-modal" style="display: none;">
+      <div class="newsletter-modal-content">
+        <button class="newsletter-modal-close" onclick="closeNewsletterModal()">&times;</button>
+        <h3>Subscribe to SigAndSys Newsletter</h3>
+        <p>Get weekly updates with practical insights on systems engineering, signal processing, and software architecture.</p>
+        
+        <form id="newsletter-form" onsubmit="handleNewsletterSubmit(event)">
+          <div class="newsletter-form-group">
+            <input 
+              type="email" 
+              id="newsletter-email" 
+              placeholder="Enter your email address" 
+              required
+              autocomplete="email"
+            />
+          </div>
+          <button type="submit" id="newsletter-submit-btn" class="newsletter-submit">
+            Subscribe
+          </button>
+        </form>
+        
+        <div id="newsletter-message" class="newsletter-message" style="display: none;"></div>
+        
+        <p class="newsletter-privacy">
+          No spam, unsubscribe anytime. Your email stays private.
+        </p>
+      </div>
+    </div>
 
     <button id="back-to-top" class="back-to-top" aria-label="Back to top">↑</button>
 
