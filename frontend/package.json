@@ -1,0 +1,27 @@
+{
+  "name": "sigandsys",
+  "version": "1.0.0",
+  "description": "A personal blog and knowledge base focused on systems engineering, signal processing, and practical software architecture.",
+  "scripts": {
+    "dev": "wrangler pages dev .",
+    "build": "echo 'Static site - no build step required'",
+    "deploy": "wrangler pages deploy",
+    "worker:dev": "wrangler dev",
+    "worker:deploy": "wrangler deploy"
+  },
+  "keywords": [
+    "blog",
+    "systems-engineering",
+    "signal-processing",
+    "cloudflare-pages",
+    "cloudflare-workers"
+  ],
+  "author": "Seth Keddy",
+  "license": "MIT",
+  "devDependencies": {
+    "wrangler": "^3.28.2"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
