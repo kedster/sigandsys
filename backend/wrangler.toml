@@ -2,15 +2,29 @@ name = "sigandsys-api"
 main = "src/index.js"
 compatibility_date = "2024-01-01"
 
-[env.production]
-name = "sigandsys-api"
-
-[env.staging]
-name = "sigandsys-api-staging"
-
-# Variables for the Workers environment
+# Environment variables for all environments
 [vars]
 ENVIRONMENT = "development"
+
+# Production environment configuration
+[env.production]
+name = "sigandsys-api"
+[env.production.vars]
+ENVIRONMENT = "production"
+
+# Staging environment configuration 
+[env.staging]
+name = "sigandsys-api-staging"
+[env.staging.vars]
+ENVIRONMENT = "staging"
+
+# Local development secrets (use .dev.vars file or wrangler secret commands)
+# For local development, create a .dev.vars file with:
+# SENDGRID_API_KEY=your_api_key_here
+#
+# For production deployment, use:
+# wrangler secret put SENDGRID_API_KEY --env production
+# wrangler secret put SENDGRID_API_KEY --env staging
 
 # Example KV namespace (uncomment when needed)
 # [[kv_namespaces]]

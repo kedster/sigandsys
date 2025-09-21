@@ -36,11 +36,29 @@ async function handleNewsletterSubscription(request, env, corsHeaders) {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });
     } else {
+      // Provide different messages based on the error type
+      let statusCode = 500;
+      let userMessage = 'Unable to subscribe at this time. Please try again later.';
+      
+      if (sendGridResult.error === 'SendGrid not configured') {
+        // For developers - more detailed error
+        if (env.ENVIRONMENT === 'development') {
+          userMessage = 'Newsletter service not configured. Please set up SendGrid API key.';
+        }
+        statusCode = 503; // Service Unavailable
+      } else if (sendGridResult.error === 'Invalid SendGrid API key') {
+        statusCode = 503;
+        userMessage = 'Newsletter service temporarily unavailable. Please try again later.';
+      } else if (sendGridResult.error === 'Insufficient SendGrid permissions') {
+        statusCode = 503;
+        userMessage = 'Newsletter service temporarily unavailable. Please try again later.';
+      }
+      
       return new Response(JSON.stringify({
         error: 'Subscription failed',
-        message: 'Unable to subscribe at this time. Please try again later.'
+        message: userMessage
       }), {
-        status: 500,
+        status: statusCode,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });
     }
@@ -65,7 +83,14 @@ async function addContactToSendGrid(email, env) {
   
   if (!sendGridApiKey) {
     console.error('SendGrid API key not configured');
-    return { success: false, error: 'SendGrid not configured' };
+    console.error('To configure: set SENDGRID_API_KEY environment variable');
+    console.error('For local dev: create .dev.vars file or use "wrangler secret put SENDGRID_API_KEY"');
+    console.error('Get API key at: https://app.sendgrid.com/settings/api_keys');
+    return { 
+      success: false, 
+      error: 'SendGrid not configured',
+      details: 'Newsletter functionality requires SendGrid API key configuration'
+    };
   }
 
   try {
@@ -92,6 +117,21 @@ async function addContactToSendGrid(email, env) {
     } else {
       const errorBody = await response.text();
       console.error('SendGrid API error:', response.status, errorBody);
+      
+      if (response.status === 401) {
+        return { 
+          success: false, 
+          error: 'Invalid SendGrid API key',
+          details: 'Please check your API key configuration and permissions'
+        };
+      } else if (response.status === 403) {
+        return { 
+          success: false, 
+          error: 'Insufficient SendGrid permissions',
+          details: 'API key needs Marketing permissions to add contacts'
+        };
+      }
+      
       return { success: false, error: errorBody };
     }
 
