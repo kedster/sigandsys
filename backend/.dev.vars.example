@@ -1,0 +1,4 @@
+# Local development variables for Wrangler
+# Copy this file to .dev.vars and fill in your values
+
+SENDGRID_API_KEY=your_sendgrid_api_key_here

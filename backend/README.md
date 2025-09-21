@@ -77,12 +77,33 @@ npm run deploy:staging
 
 ### Environment Variables
 - `ENVIRONMENT`: Current environment (development/production)
+- `SENDGRID_API_KEY`: SendGrid API key for newsletter functionality
 
-### Wrangler Configuration
-See `wrangler.toml` for:
-- Worker name and routing
-- Environment-specific settings
-- Resource bindings (KV, D1, etc.)
+### SendGrid Setup
+For quick SendGrid configuration, see the [SendGrid Quick Start Guide](../SENDGRID_QUICKSTART.md).
+
+For comprehensive setup instructions, see [Newsletter Setup Guide](../NEWSLETTER_SETUP.md).
+
+### Local Development Environment Variables
+Create a `.dev.vars` file in the backend directory:
+```
+SENDGRID_API_KEY=your_sendgrid_api_key_here
+```
+
+Or copy from the example:
+```bash
+cp .env.example .env
+# Edit .env with your values
+```
+
+### Validation Scripts
+```bash
+# Test your SendGrid API key configuration
+npm run validate-sendgrid
+
+# Test newsletter endpoint locally
+npm run test-newsletter
+```
 
 ## Future Enhancements
 

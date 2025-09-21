@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
-    "deploy:staging": "wrangler deploy --env staging"
+    "deploy:staging": "wrangler deploy --env staging",
+    "validate-sendgrid": "node scripts/validate-sendgrid.js",
+    "test-newsletter": "curl -X POST -H \"Content-Type: application/json\" -d '{\"email\":\"test@example.com\"}' http://localhost:8787/newsletter/subscribe"
   },
   "devDependencies": {
     "wrangler": "^3.28.2"
