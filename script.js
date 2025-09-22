@@ -840,13 +840,13 @@ class BlogLoader {
         // Insert after search input
         searchContainer.appendChild(tagFiltersContainer);
         
-        // Populate with popular tags
-        this.updateSearchTagFilters();
+        // Populate with popular tags after articles are loaded
+        setTimeout(() => this.updateSearchTagFilters(), 100);
     }
 
     updateSearchTagFilters() {
         const filtersContainer = document.getElementById('search-tag-filters-list');
-        if (!filtersContainer) return;
+        if (!filtersContainer || this.articles.length === 0) return;
         
         // Get popular tags (most used)
         const tagCounts = {};
@@ -892,27 +892,37 @@ class BlogLoader {
     }
 
     filterArticles(term) {
-        // Filter based on the original articles data, not DOM elements
-        const filteredArticles = this.articles.filter(article => {
-            const title = article.title.toLowerCase();
-            const excerpt = article.excerpt.toLowerCase();
-            const tags = article.tags.join(' ').toLowerCase();
-            const content = article.content.toLowerCase();
+        const articles = document.querySelectorAll('.article');
+        let visibleCount = 0;
+        
+        articles.forEach(article => {
+            const title = article.querySelector('.article-title').textContent.toLowerCase();
+            const excerpt = article.querySelector('.article-excerpt').textContent.toLowerCase();
+            const tags = Array.from(article.querySelectorAll('.tag')).map(tag => tag.textContent.toLowerCase()).join(' ');
+            // Also check data-tags attribute for enhanced tag searching
+            const dataTags = (article.dataset.tags || '').toLowerCase();
             
-            return title.includes(term) || 
-                   excerpt.includes(term) || 
-                   tags.includes(term) ||
-                   content.includes(term);
+            const match = title.includes(term) || 
+                         excerpt.includes(term) || 
+                         tags.includes(term) ||
+                         dataTags.includes(term);
+            
+            if (match) {
+                article.style.display = 'block';
+                visibleCount++;
+            } else {
+                article.style.display = 'none';
+            }
         });
         
-        console.log(`Search term "${term}" found ${filteredArticles.length} matching articles:`, 
-                   filteredArticles.map(a => ({ id: a.id, title: a.title, tags: a.tags })));
-        
-        // Re-render with filtered results
-        this.renderFilteredArticles(filteredArticles);
+        // Hide banners during search
+        const banners = document.querySelectorAll('.banner-ad-container');
+        banners.forEach(banner => {
+            banner.style.display = 'none';
+        });
         
         // Update search results indicator
-        this.updateSearchResultsIndicator(term, filteredArticles.length);
+        this.updateSearchResultsIndicator(term, visibleCount);
         
         const loadMoreContainer = document.getElementById('load-more-container');
         if (loadMoreContainer) loadMoreContainer.innerHTML = '';
@@ -935,7 +945,8 @@ class BlogLoader {
             const resultText = count === 1 ? '1 article' : `${count} articles`;
             indicator.innerHTML = `
                 <div class="search-results-text">
-                    Showing ${resultText} matching "<strong>${term}</strong>"
+                    <i class="fas fa-search"></i>
+                    Found ${resultText} matching "<strong>${term}</strong>"
                     <button class="clear-search-btn" onclick="
                         const searchInput = document.querySelector('.search-input');
                         if (searchInput) {
@@ -948,6 +959,11 @@ class BlogLoader {
             indicator.style.display = 'block';
         } else {
             indicator.style.display = 'none';
+            // Show banners again when not filtering
+            const banners = document.querySelectorAll('.banner-ad-container');
+            banners.forEach(banner => {
+                banner.style.display = 'block';
+            });
         }
     }
 

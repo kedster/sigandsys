@@ -1798,6 +1798,10 @@ body {
     flex-wrap: wrap;
 }
 
+.search-results-text i {
+    color: var(--color-primary);
+}
+
 .clear-search-btn {
     background: var(--color-primary);
     color: white;
@@ -2076,6 +2080,41 @@ body {
         flex-wrap: wrap;
         gap: var(--spacing-xs);
     }
+    
+    /* Search Enhancements - Mobile */
+    .search-tag-filters {
+        margin-top: var(--spacing-sm);
+    }
+    
+    .search-tag-filters-list {
+        justify-content: center;
+        gap: var(--spacing-xs);
+    }
+    
+    .search-tag-filter {
+        padding: var(--spacing-xs) var(--spacing-sm);
+        font-size: var(--font-size-small);
+        min-height: 36px;
+        display: flex;
+        align-items: center;
+    }
+    
+    .search-results-indicator {
+        margin-bottom: var(--spacing-md);
+        padding: var(--spacing-sm);
+    }
+    
+    .search-results-text {
+        font-size: var(--font-size-small);
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--spacing-sm);
+        text-align: center;
+    }
+    
+    .clear-search-btn {
+        align-self: center;
+    }
 }
 
 /* ==========================================================================
@@ -2145,41 +2184,6 @@ body {
         padding: var(--spacing-sm);
         font-size: 16px; /* Prevents zoom on iOS */
         min-height: 44px;
-    }
-    
-    /* Search Enhancements - Mobile */
-    .search-tag-filters {
-        margin-top: var(--spacing-sm);
-    }
-    
-    .search-tag-filters-list {
-        justify-content: center;
-        gap: var(--spacing-xs);
-    }
-    
-    .search-tag-filter {
-        padding: var(--spacing-xs) var(--spacing-sm);
-        font-size: var(--font-size-small);
-        min-height: 36px;
-        display: flex;
-        align-items: center;
-    }
-    
-    .search-results-indicator {
-        margin-bottom: var(--spacing-md);
-        padding: var(--spacing-sm);
-    }
-    
-    .search-results-text {
-        font-size: var(--font-size-small);
-        flex-direction: column;
-        align-items: flex-start;
-        gap: var(--spacing-sm);
-        text-align: center;
-    }
-    
-    .clear-search-btn {
-        align-self: center;
     }
     
     .social-links {
