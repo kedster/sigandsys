@@ -536,6 +536,8 @@ class BlogLoader {
             articleEl.className = 'article';
             articleEl.id = `article-${article.id}`;
             articleEl.dataset.id = article.id;
+            // Add data-tags attribute for tag metadata as requested
+            articleEl.dataset.tags = article.tags.join(',').toLowerCase();
             
             articleEl.innerHTML = `
                 <div class="article-header">
@@ -745,6 +747,8 @@ class BlogLoader {
             articleEl.className = 'article';
             articleEl.id = `article-${article.id}`;
             articleEl.dataset.id = article.id;
+            // Add data-tags attribute for tag metadata as requested
+            articleEl.dataset.tags = article.tags.join(',').toLowerCase();
             
             articleEl.innerHTML = `
                 <div class="article-header">
@@ -788,6 +792,9 @@ class BlogLoader {
         const input = document.querySelector('.search-input');
         if (!input) return;
         
+        // Add search enhancement UI
+        this.addSearchEnhancements();
+        
         // Debounce search for better performance
         input.addEventListener('input', (e) => {
             clearTimeout(this.searchTimeout);
@@ -797,25 +804,167 @@ class BlogLoader {
                     this.isFiltering = false;
                     this.visibleCount = this.pageSize;
                     this.renderArticles();
+                    this.updateSearchResultsIndicator('', 0);
                     return;
                 }
                 this.isFiltering = true;
                 this.filterArticles(term);
             }, 300); // Wait 300ms after user stops typing
         });
+        
+        // Add keyboard shortcuts for search
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                input.value = '';
+                input.dispatchEvent(new Event('input'));
+                input.blur();
+            }
+        });
+    }
+
+    addSearchEnhancements() {
+        // Add popular tags as quick search filters
+        const searchContainer = document.querySelector('.search-area');
+        if (!searchContainer) return;
+        
+        // Create tag filters container
+        const tagFiltersContainer = document.createElement('div');
+        tagFiltersContainer.className = 'search-tag-filters';
+        tagFiltersContainer.innerHTML = `
+            <div class="search-tag-filters-label">Quick filters:</div>
+            <div class="search-tag-filters-list" id="search-tag-filters-list">
+                <!-- Tags will be populated dynamically -->
+            </div>
+        `;
+        
+        // Insert after search input
+        searchContainer.appendChild(tagFiltersContainer);
+        
+        // Populate with popular tags after articles are loaded
+        setTimeout(() => this.updateSearchTagFilters(), 100);
+    }
+
+    updateSearchTagFilters() {
+        const filtersContainer = document.getElementById('search-tag-filters-list');
+        if (!filtersContainer || this.articles.length === 0) return;
+        
+        // Get popular tags (most used)
+        const tagCounts = {};
+        this.articles.forEach(article => {
+            if (article.tags) {
+                article.tags.forEach(tag => {
+                    tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+                });
+            }
+        });
+        
+        const popularTags = Object.entries(tagCounts)
+            .sort(([,a], [,b]) => b - a)
+            .slice(0, 8) // Show top 8 tags
+            .map(([tag]) => tag);
+        
+        // Create filter buttons
+        let filtersHTML = '';
+        popularTags.forEach(tag => {
+            filtersHTML += `<button class="search-tag-filter" data-tag="${tag}" title="Filter by ${tag}">${tag}</button>`;
+        });
+        
+        filtersContainer.innerHTML = filtersHTML;
+        
+        // Add click handlers for tag filters
+        filtersContainer.addEventListener('click', (e) => {
+            if (e.target.classList.contains('search-tag-filter')) {
+                const tag = e.target.dataset.tag;
+                const searchInput = document.querySelector('.search-input');
+                if (searchInput) {
+                    searchInput.value = tag;
+                    searchInput.dispatchEvent(new Event('input'));
+                    searchInput.focus();
+                }
+                
+                // Visual feedback
+                e.target.classList.add('active');
+                setTimeout(() => {
+                    e.target.classList.remove('active');
+                }, 300);
+            }
+        });
     }
 
     filterArticles(term) {
         const articles = document.querySelectorAll('.article');
+        let visibleCount = 0;
+        
         articles.forEach(article => {
             const title = article.querySelector('.article-title').textContent.toLowerCase();
             const excerpt = article.querySelector('.article-excerpt').textContent.toLowerCase();
             const tags = Array.from(article.querySelectorAll('.tag')).map(tag => tag.textContent.toLowerCase()).join(' ');
-            const match = title.includes(term) || excerpt.includes(term) || tags.includes(term);
-            article.style.display = match ? 'block' : 'none';
+            // Also check data-tags attribute for enhanced tag searching
+            const dataTags = (article.dataset.tags || '').toLowerCase();
+            
+            const match = title.includes(term) || 
+                         excerpt.includes(term) || 
+                         tags.includes(term) ||
+                         dataTags.includes(term);
+            
+            if (match) {
+                article.style.display = 'block';
+                visibleCount++;
+            } else {
+                article.style.display = 'none';
+            }
         });
+        
+        // Hide banners during search
+        const banners = document.querySelectorAll('.banner-ad-container');
+        banners.forEach(banner => {
+            banner.style.display = 'none';
+        });
+        
+        // Update search results indicator
+        this.updateSearchResultsIndicator(term, visibleCount);
+        
         const loadMoreContainer = document.getElementById('load-more-container');
         if (loadMoreContainer) loadMoreContainer.innerHTML = '';
+    }
+
+    updateSearchResultsIndicator(term, count) {
+        // Create or update search results indicator
+        let indicator = document.getElementById('search-results-indicator');
+        if (!indicator) {
+            indicator = document.createElement('div');
+            indicator.id = 'search-results-indicator';
+            indicator.className = 'search-results-indicator';
+            const articleList = document.getElementById('article-list');
+            if (articleList && articleList.parentNode) {
+                articleList.parentNode.insertBefore(indicator, articleList);
+            }
+        }
+        
+        if (term && this.isFiltering) {
+            const resultText = count === 1 ? '1 article' : `${count} articles`;
+            indicator.innerHTML = `
+                <div class="search-results-text">
+                    <i class="fas fa-search"></i>
+                    Found ${resultText} matching "<strong>${term}</strong>"
+                    <button class="clear-search-btn" onclick="
+                        const searchInput = document.querySelector('.search-input');
+                        if (searchInput) {
+                            searchInput.value = ''; 
+                            searchInput.dispatchEvent(new Event('input'));
+                        }
+                    ">Clear search</button>
+                </div>
+            `;
+            indicator.style.display = 'block';
+        } else {
+            indicator.style.display = 'none';
+            // Show banners again when not filtering
+            const banners = document.querySelectorAll('.banner-ad-container');
+            banners.forEach(banner => {
+                banner.style.display = 'block';
+            });
+        }
     }
 
     setupNavigation() {
